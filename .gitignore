@@ -1,0 +1,26 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Visual Studio
+.vs/
+*.csproj.user
+*.[Cc]ache
+*.ddp
+*.log
+*.nupkg
+*.tmp
+
+## JetBrains Rider
+.idea/
+*.sln.iml
+
+## macOS
+.DS_Store
+
+## Secrets
+appsettings.Development.json

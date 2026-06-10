@@ -1,7 +1,7 @@
-﻿using Assinments.Model;
+using E_commerce.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace Assinments.Repository
+namespace E_commerce.Repository
 {
     public class CategoryRepostiry : ICategoryRepository
     {
@@ -11,7 +11,7 @@ namespace Assinments.Repository
         {
             Context = _dbContext;
         }
-        public List<Category> GetCategories()
+        public List<Category>? GetCategories()
         {
             var Categories = Context.Categories.Include(c => c.Products).ToList();
             return Categories;
@@ -28,14 +28,14 @@ namespace Assinments.Repository
             Context.SaveChanges();
         }
 
-        public Category GetCategoryByName(string Name)
+        public Category? GetCategoryByName(string Name)
         {
             var category = Context.Categories.FirstOrDefault(c => c.Name.ToLower() == Name.ToLower());
 
             return category;
         }
 
-        public Category GetCategoryById(int Id)
+        public Category? GetCategoryById(int Id)
         {
             var category = Context.Categories.FirstOrDefault(c => c.Id == Id);
 
@@ -44,7 +44,9 @@ namespace Assinments.Repository
 
         public void RemoveCategory(int Id)
         {
-            var category = Context.Categories.SingleOrDefault(c => c.Id == Id);
+            var category = Context.Categories.FirstOrDefault(c => c.Id == Id);
+            if (category == null)
+                return;
             Context.Remove(category);
         }
     }

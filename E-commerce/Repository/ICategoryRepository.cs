@@ -1,11 +1,11 @@
-﻿using Assinments.Model;
+using E_commerce.Model;
 
-namespace Assinments.Repository
+namespace E_commerce.Repository
 {
     public interface ICategoryRepository
     {
 
-        public List<Category> GetCategories();
+        public List<Category>? GetCategories();
 
         public void Save();
 
@@ -13,9 +13,9 @@ namespace Assinments.Repository
 
         public void RemoveCategory(int Id);
 
-        public Category GetCategoryByName(string Name);
+        public Category? GetCategoryByName(string Name);
 
-        public Category GetCategoryById(int Id);
+        public Category? GetCategoryById(int Id);
 
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Assinments.DTos.Cart
+namespace E_commerce.DTos.Cart
 {
     public class AddToCartDto
     {

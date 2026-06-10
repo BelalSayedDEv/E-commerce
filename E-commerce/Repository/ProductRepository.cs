@@ -1,7 +1,7 @@
-﻿using Assinments.Model;
+using E_commerce.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace Assinments.Repository
+namespace E_commerce.Repository
 {
     public class ProductRepository : IProductRepository
     {
@@ -10,13 +10,13 @@ namespace Assinments.Repository
         {
             Context = context;
         }
-        public List<Product> GetProducts()
+        public List<Product>? GetProducts()
         {
             var products = Context.Products.ToList();
             return products;
         }
 
-        public Product GetProductById(int Id)
+        public Product? GetProductById(int Id)
         {
             var product = Context.Products.First(d => d.Id == Id);
 
@@ -25,7 +25,7 @@ namespace Assinments.Repository
         }
 
 
-        public Product GetProductByName(string name)
+        public Product? GetProductByName(string name)
         {
             var product = Context.Products.FirstOrDefault(d => d.Name.ToLower() == name.ToLower());
             return product;
@@ -34,6 +34,8 @@ namespace Assinments.Repository
         public void UpdateProduct(int Id, Product product)
         {
             var ProductFromdata = Context.Products.FirstOrDefault(d => d.Id == Id);
+            if (ProductFromdata == null)
+                return;
 
             ProductFromdata.Price = product.Price;
             ProductFromdata.Quantity = product.Quantity;
@@ -48,6 +50,8 @@ namespace Assinments.Repository
         {
             var product = Context.Products.FirstOrDefault(d => d.Id == Id);
 
+            if (product == null)
+                return;
             Context.Products.Remove(product);
 
         }
@@ -93,6 +97,8 @@ namespace Assinments.Repository
         public async Task deleteProductAsync(int Id)
         {
             var product = await Context.Products.FirstOrDefaultAsync(d => d.Id == Id);
+            if (product == null)
+                return;
 
             Context.Products.Remove(product);
 

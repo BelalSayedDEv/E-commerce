@@ -1,4 +1,4 @@
-﻿namespace Assinments.DTos.ProductDTOs
+namespace E_commerce.DTos.ProductDTOs
 {
     public class UpdateProductStock
     {

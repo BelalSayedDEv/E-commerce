@@ -1,7 +1,7 @@
-﻿using Assinments.Model;
+using E_commerce.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace Assinments.Repository
+namespace E_commerce.Repository
 {
     public class OrderRepository : IOrderRepository
     {

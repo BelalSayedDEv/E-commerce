@@ -1,15 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
-namespace Assinments.DTos.AccountDTOs
+namespace E_commerce.DTos.AccountDTOs
 {
     public class LoginDto
     {
         [Required]
-        public string UserName { get; set; }
+        [StringLength(20, MinimumLength = 2)]
+        public string UserName { get; set; } = string.Empty;
         [DataType(DataType.Password)]
         [Required]
         [StringLength(20, MinimumLength = 4)]
-        public string Password { get; set; }
+        public string Password { get; set; } = string.Empty;
 
     }
 }

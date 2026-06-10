@@ -1,8 +1,8 @@
-﻿using Assinments.DTos.Order;
-using Assinments.Model;
-using Assinments.Repository;
+using E_commerce.DTos.Order;
+using E_commerce.Model;
+using E_commerce.Repository;
 
-namespace Assinments.Services
+namespace E_commerce.Services
 {
     public class OrderService : IOrderService
     {
@@ -25,9 +25,12 @@ namespace Assinments.Services
             this.logger = logger;
         }
 
-        public List<OrderDto> GetOrdersHistory(string userId)
+        public List<OrderDto>? GetOrdersHistory(string userId)
         {
             var Orders = orderRepository.GetOrders(userId);
+
+            if (Orders == null)
+                return null;
 
             return Orders.Select(o => new OrderDto
             {
@@ -43,8 +46,6 @@ namespace Assinments.Services
 
         public async Task<OrderDto?> MakeOrder(string userId)
         {
-
-
             var cart = cartRepository.GetCartByUserId(userId);
             if (cart == null)
             {
@@ -60,7 +61,7 @@ namespace Assinments.Services
             Order order = new Order();
             order.UserId = userId;
             order.OrderDate = DateTime.Now;
-            order.Status = "Pending";
+
 
             var orderWithId = orderRepository.Add(order);
 
@@ -71,23 +72,26 @@ namespace Assinments.Services
             {
                 var product = await productRepository.GetProductByIdAsync(item.ProductID);
 
-                if (product.Quantity < item.Quantity)
+                if (product != null)
                 {
-                    logger.LogWarning("Empty stock {ProductId} ,Available {Available},Requested {Requested}",
-                        product.Id, product.Quantity, item.Quantity);
-                    return null;
+                    if (product.Quantity < item.Quantity)
+                    {
+                        logger.LogWarning("Empty stock {ProductId} ,Available {Available},Requested {Requested}",
+                            product.Id, product.Quantity, item.Quantity);
+                        return null;
+                    }
+
+                    OrderItem orderItem = new OrderItem();
+                    orderItem.Order = order;
+                    orderItem.Quantity = item.Quantity;
+                    orderItem.ProductId = item.ProductID;
+                    orderItem.Price = product.Price;
+
+                    orderItemRepository.Add(orderItem);
+                    strings.Add($"{product.Name} * {item.Quantity} = {product.Price * item.Quantity} ");
+                    total += product.Price * item.Quantity;
+                    product.Quantity -= item.Quantity;
                 }
-
-                OrderItem orderItem = new OrderItem();
-                orderItem.Order = order;
-                orderItem.Quantity = item.Quantity;
-                orderItem.ProductId = item.ProductID;
-                orderItem.Price = product.Price;
-
-                orderItemRepository.Add(orderItem);
-                strings.Add($"{product.Name} * {item.Quantity} = {product.Price * item.Quantity} ");
-                total += product.Price * item.Quantity;
-                product.Quantity -= item.Quantity;
             }
 
             order.TotalOrderPrice = total;
@@ -116,7 +120,7 @@ namespace Assinments.Services
             return orderDto;
         }
 
-        public OrderDto UpdateStatus(int Id, string status)
+        public OrderDto? UpdateStatus(int Id, string status)
         {
             var order = orderRepository.GetOrderById(Id);
 

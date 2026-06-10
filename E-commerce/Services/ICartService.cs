@@ -1,6 +1,6 @@
-﻿using Assinments.DTos.Cart;
+using E_commerce.DTos.Cart;
 
-namespace Assinments.Services
+namespace E_commerce.Services
 {
     public interface ICartService
     {

@@ -1,11 +1,11 @@
-using Assinments.DTos.Order;
-using Assinments.Model;
-using Assinments.Services;
+using E_commerce.DTos.Order;
+using E_commerce.Model;
+using E_commerce.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-namespace Assinments.Controllers
+namespace E_commerce.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
@@ -22,7 +22,7 @@ namespace Assinments.Controllers
         [HttpPost("checkout")]
         public async Task<IActionResult> Checkout()
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
             var result = await orderService.MakeOrder(userId);
 
@@ -35,7 +35,7 @@ namespace Assinments.Controllers
         [HttpGet("History")]
         public IActionResult GetOrdersResult()
         {
-            string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
             var OrderHistory = orderService.GetOrdersHistory(UserId);
 

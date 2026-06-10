@@ -1,11 +1,11 @@
-﻿using Assinments.Model;
+using E_commerce.Model;
 
-namespace Assinments.Repository
+namespace E_commerce.Repository
 {
     public interface ICartRepository
     {
 
-        public Cart GetCartByUserId(string UserId);
+        public Cart? GetCartByUserId(string UserId);
 
         public void Save();
 

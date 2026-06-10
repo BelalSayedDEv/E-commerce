@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Assinments.Model
+namespace E_commerce.Model
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {

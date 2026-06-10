@@ -1,17 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
-namespace Assinments.DTos.ProductDTOs
+namespace E_commerce.DTos.ProductDTOs
 {
     public class AddProductDTO
     {
         [Required]
         [StringLength(50, MinimumLength = 2)]
 
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         [Required]
         [StringLength(100, MinimumLength = 10)]
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
 
         [Range(minimum: 10, maximum: int.MaxValue)]
         public int Price { get; set; }

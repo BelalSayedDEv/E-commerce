@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
-namespace Assinments.Model
+namespace E_commerce.Model
 {
     public class Category
     {
@@ -8,8 +8,8 @@ namespace Assinments.Model
 
         [Required]
         [StringLength(50, MinimumLength = 2)]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
-        public ICollection<Product>? Products { get; set; }
+        public ICollection<Product> Products { get; set; } = new List<Product>();
     }
 }

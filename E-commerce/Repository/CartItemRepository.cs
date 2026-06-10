@@ -1,6 +1,6 @@
-﻿using Assinments.Model;
+using E_commerce.Model;
 
-namespace Assinments.Repository
+namespace E_commerce.Repository
 {
     public class CartItemRepository : ICartItemRepository
 

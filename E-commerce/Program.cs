@@ -1,14 +1,14 @@
 
-using Assinments.Model;
-using Assinments.Repository;
-using Assinments.Services;
+using E_commerce.Model;
+using E_commerce.Repository;
+using E_commerce.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace Assinments
+namespace E_commerce
 {
     public class Program
     {
@@ -70,7 +70,7 @@ namespace Assinments
 
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey
-                                (Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secrit"])),
+                                (Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secrit"]!)),
 
 
                     ValidateLifetime = true,
@@ -108,8 +108,8 @@ namespace Assinments
                 using var scope = app.Services.CreateScope();
 
                 var db = scope.ServiceProvider.GetService<ApplicationDbContext>();
-
-                db.Database.CanConnect();
+                if (db != null)
+                    db.Database.CanConnect();
 
             }
             catch (Exception ex)

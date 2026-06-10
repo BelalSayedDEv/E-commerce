@@ -1,8 +1,9 @@
-﻿using Assinments.DTos.ProductDTOs;
-using Assinments.Services;
+using E_commerce.DTos.ProductDTOs;
+using E_commerce.Model;
+using E_commerce.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Assinments.Controllers
+namespace E_commerce.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -23,9 +24,9 @@ namespace Assinments.Controllers
             var products = await productService.GetAllProductsAsync();
 
             if (products == null)
-                return NotFound();
+                return NotFound(ApiResponse<object>.Failure("No Found"));
 
-            return Ok(products);
+            return Ok(ApiResponse<List<ShowProductDto>>.Success(products));
         }
 
 
@@ -51,9 +52,9 @@ namespace Assinments.Controllers
             var Product = await productService.GetProductByIdAsync(Id);
 
             if (Product == null)
-                return NotFound();
+                return NotFound(ApiResponse<object>.Failure("No Found"));
 
-            return Ok(Product);
+            return Ok(ApiResponse<ShowProductDto>.Success(Product));
         }
 
         [HttpPost]
@@ -85,9 +86,9 @@ namespace Assinments.Controllers
             var product = await productService.AddProductAsync(ProductFromReq);
 
             if (product == null)
-                return BadRequest("Product has already exist");
+                return BadRequest(ApiResponse<Object>.Failure("Product has already exist"));
 
-            return CreatedAtAction("GetProductById", new { Id = product.Id }, product);
+            return CreatedAtAction("GetProductById", new { Id = product.Id }, ApiResponse<ShowProductDto>.Success(product));
 
         }
 
@@ -106,12 +107,12 @@ namespace Assinments.Controllers
 
             //----------------------------- version 2 ----------------------------
 
-            EditProductDto product = await productService.EditProductAsync(Id, ProductFromReq);
+            EditProductDto? product = await productService.EditProductAsync(Id, ProductFromReq);
 
             if (product == null)
-                return NotFound();
+                return NotFound(ApiResponse<object>.Failure("No Found"));
 
-            return Ok(product);
+            return Ok(ApiResponse<EditProductDto>.Success(product));
 
         }
 
@@ -135,9 +136,9 @@ namespace Assinments.Controllers
 
             var Product = await productService.DeleteProductAsync(Id);
             if (Product == null)
-                return NotFound();
+                return NotFound(ApiResponse<object>.Failure("No Found"));
 
-            return NoContent();
+            return Ok(ApiResponse<Object>.Success(null, "Deleted Successfully"));
 
         }
 
@@ -146,9 +147,9 @@ namespace Assinments.Controllers
         {
             var Prodcut = await productService.EditeProductStockAsync(Id, stock);
             if (Prodcut == null)
-                return NotFound();
+                return NotFound(ApiResponse<Object>.Failure("Not Found"));
 
-            return Ok(Prodcut);
+            return Ok(ApiResponse<ShowProductDto>.Success(Prodcut));
         }
 
     }

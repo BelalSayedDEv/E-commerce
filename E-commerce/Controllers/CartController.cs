@@ -1,10 +1,11 @@
-﻿using Assinments.DTos.Cart;
-using Assinments.Services;
+using E_commerce.DTos.Cart;
+using E_commerce.Model;
+using E_commerce.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-namespace Assinments.Controllers
+namespace E_commerce.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
@@ -23,27 +24,28 @@ namespace Assinments.Controllers
         {
             var claimsList = User.Claims.Select(c => $"{c.Type} = {c.Value}").ToList();
 
-            string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string id = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
             Console.WriteLine($"NameIdentifier claim: '{(id ?? "NULL")}'");
 
             cartService.AddToCart(id, dto);
 
-            return NoContent();
+            return Ok(ApiResponse<object>.Success(null, "Item added in Card"));
 
         }
         [HttpGet]
         public IActionResult GetCart()
         {
 
-            string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string id = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
-            CartDto cartDto = cartService.GetCart(id);
+            CartDto? cartDto = cartService.GetCart(id);
+
             if (cartDto == null)
-                return NoContent();
+                return NotFound(ApiResponse<object>.Failure("Not Found"));
 
 
-            return Ok(cartDto);
+            return Ok(ApiResponse<CartDto>.Success(cartDto));
 
         }
 
@@ -53,9 +55,9 @@ namespace Assinments.Controllers
 
             var result = cartService.RemoveFromCart(ItemId);
             if (!result)
-                return NotFound();
+                return NotFound(ApiResponse<object>.Failure("Not Found"));
 
-            return NoContent();
+            return Ok(ApiResponse<Object>.Success(null, "Deleted Successfuly"));
         }
 
     }

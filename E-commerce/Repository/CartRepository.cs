@@ -1,6 +1,6 @@
-﻿using Assinments.Model;
+using E_commerce.Model;
 
-namespace Assinments.Repository
+namespace E_commerce.Repository
 {
     public class CartRepository : ICartRepository
     {
@@ -16,7 +16,7 @@ namespace Assinments.Repository
             context.Add(cart);
         }
 
-        public Cart GetCartByUserId(string UserId)
+        public Cart? GetCartByUserId(string UserId)
         {
             var cart = context.Carts.FirstOrDefault(c => c.UserID == UserId);
 

@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Assinments.Migrations
+namespace E_commerce.Migrations
 {
     /// <inheritdoc />
     public partial class addCartandCartItem : Migration

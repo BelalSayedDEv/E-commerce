@@ -1,9 +1,9 @@
-﻿using Assinments.DTos;
-using Assinments.DTos.CategoryDTOs;
-using Assinments.Model;
-using Assinments.Repository;
+using E_commerce.DTos;
+using E_commerce.DTos.CategoryDTOs;
+using E_commerce.Model;
+using E_commerce.Repository;
 
-namespace Assinments.Services
+namespace E_commerce.Services
 {
     public class CategoryService : ICategoryService
     {
@@ -34,6 +34,7 @@ namespace Assinments.Services
                 {
                     showCategoryDto.ProductsName.Add(product.Name);
                 }
+
                 list.Add(showCategoryDto);
             }
 

@@ -1,14 +1,14 @@
-﻿using Assinments.Model;
+using E_commerce.Model;
 
-namespace Assinments.Repository
+namespace E_commerce.Repository
 {
     public interface IProductRepository
     {
-        public List<Product> GetProducts();
+        public List<Product>? GetProducts();
 
-        public Product GetProductById(int id);
+        public Product? GetProductById(int id);
 
-        public Product GetProductByName(string name);
+        public Product? GetProductByName(string name);
 
         public void AddProduct(Product product);
         public void UpdateProduct(int Id, Product product);

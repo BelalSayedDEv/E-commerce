@@ -1,9 +1,10 @@
-﻿using Assinments.DTos;
-using Assinments.DTos.CategoryDTOs;
-using Assinments.Services;
+using E_commerce.DTos;
+using E_commerce.DTos.CategoryDTOs;
+using E_commerce.Model;
+using E_commerce.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Assinments.Controllers
+namespace E_commerce.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -40,12 +41,12 @@ namespace Assinments.Controllers
             //return Ok(Listdto);
             // -----------------------------version 2
 
-            var categories = categoryService.GetCategories();
+            List<ShowCategoryDto> categories = categoryService.GetCategories().ToList();
             if (categories == null)
-                return NotFound();
+                return NotFound(ApiResponse<object>.Failure("Not Found"));
 
 
-            return Ok(categories);
+            return Ok(ApiResponse<List<ShowCategoryDto>>.Success(categories));
         }
 
         [HttpGet("{Id}")]
@@ -63,10 +64,10 @@ namespace Assinments.Controllers
 
             var category = categoryService.GetCategoryById(Id);
             if (category == null)
-                return NotFound();
+                return NotFound(ApiResponse<object>.Failure("Not Found"));
 
 
-            return Ok(category);
+            return Ok(ApiResponse<ShowCategoryDto>.Success(category));
         }
 
         [HttpPost]
@@ -91,11 +92,11 @@ namespace Assinments.Controllers
             var Category = categoryService.AddCategory(category);
 
             if (Category == null)
-                return BadRequest("Category is already exist");
+                return BadRequest(ApiResponse<object>.Failure("Category is already exist"));
 
             categoryService.Save();
 
-            return CreatedAtAction("GetCategorybyId", new { Id = Category.Id }, Category);
+            return CreatedAtAction("GetCategorybyId", new { Id = Category.Id }, ApiResponse<AddCategoryDto>.Success(Category));
         }
 
         [HttpPut]
@@ -104,11 +105,11 @@ namespace Assinments.Controllers
             var Category = categoryService.EditCategory(Id, category);
 
             if (Category == null)
-                return NotFound();
+                return NotFound(ApiResponse<object>.Failure("No Found"));
 
             categoryService.Save();
 
-            return Ok(Category);
+            return Ok(ApiResponse<ShowCategoryDto>.Success(Category));
         }
 
         [HttpDelete]
@@ -117,11 +118,11 @@ namespace Assinments.Controllers
             var Category = categoryService.DeleteCategory(Id);
 
             if (Category == null)
-                return NotFound();
+                return NotFound(ApiResponse<object>.Failure("No Found"));
 
             categoryService.Save();
 
-            return NoContent(); ;
+            return Ok(ApiResponse<object>.Success(null, "Deleted Successfully")); ;
         }
 
     }

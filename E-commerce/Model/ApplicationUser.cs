@@ -1,14 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 
-namespace Assinments.Model
+namespace E_commerce.Model
 {
     public class ApplicationUser : IdentityUser
     {
-        public string FullName { get; set; }
-        public string Address { get; set; }
+        public string FullName { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
 
-        public Cart Cart { get; set; }
+        public Cart Cart { get; set; } = null!;
 
-        public List<Order> Orders { get; set; }
+        public List<Order> Orders { get; set; } = new List<Order>();
     }
 }

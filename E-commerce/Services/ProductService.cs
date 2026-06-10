@@ -1,8 +1,8 @@
-﻿using Assinments.DTos.ProductDTOs;
-using Assinments.Model;
-using Assinments.Repository;
+using E_commerce.DTos.ProductDTOs;
+using E_commerce.Model;
+using E_commerce.Repository;
 
-namespace Assinments.Services
+namespace E_commerce.Services
 {
     public class ProductService : IproductService
     {

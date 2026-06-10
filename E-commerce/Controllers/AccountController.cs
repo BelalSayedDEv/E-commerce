@@ -1,6 +1,6 @@
-﻿using Assinments.DTos.AccountDTOs;
-using Assinments.Model;
-using Assinments.Repository;
+using E_commerce.DTos.AccountDTOs;
+using E_commerce.Model;
+using E_commerce.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -8,7 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Assinments.Controllers
+namespace E_commerce.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -33,7 +33,7 @@ namespace Assinments.Controllers
             {
                 var userFromDb = await userManager.FindByNameAsync(UserFromReq.UserName);
                 if (userFromDb != null)
-                    return BadRequest(ModelState);
+                    return BadRequest(ApiResponse<object>.Failure("User is Exist"));
 
                 var user = new ApplicationUser
                 {
@@ -51,7 +51,7 @@ namespace Assinments.Controllers
                     cartRepository.AddCart(cart);
                     cartRepository.Save();
 
-                    return Ok("Created");
+                    return Ok(ApiResponse<object>.Success(null, "Created"));
                 }
 
                 foreach (var item in result.Errors)
@@ -62,7 +62,12 @@ namespace Assinments.Controllers
 
             }
 
-            return BadRequest(ModelState);
+            var Errors = ModelState.Values.SelectMany(x => x.Errors)
+                               .Select(x => x.ErrorMessage)
+                               .ToList();
+
+
+            return BadRequest(ApiResponse<object>.Failure("Validation Faild", Errors));
 
         }
 
@@ -70,7 +75,15 @@ namespace Assinments.Controllers
         public async Task<IActionResult> LoginAsync(LoginDto UserFromReq)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            {
+                var Errors1 = ModelState.Values.SelectMany(x => x.Errors)
+                               .Select(x => x.ErrorMessage)
+                               .ToList();
+
+
+                return BadRequest(ApiResponse<object>.Failure("Validation Faild", Errors1));
+            }
+
 
             var user = await userManager.FindByNameAsync(UserFromReq.UserName);
 
@@ -86,7 +99,7 @@ namespace Assinments.Controllers
                     List<Claim> claims = new List<Claim>();
 
                     claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id));
-                    claims.Add(new Claim(ClaimTypes.Name, user.UserName));
+                    claims.Add(new Claim(ClaimTypes.Name, user.UserName!));
 
                     // generated jti  Id token 
 
@@ -102,7 +115,7 @@ namespace Assinments.Controllers
 
                     // finish claims 
 
-                    var SignIn = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Secrit"]));
+                    var SignIn = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Secrit"]!));
 
                     var signingKey = new SigningCredentials(SignIn, SecurityAlgorithms.HmacSha256);
 
@@ -118,19 +131,29 @@ namespace Assinments.Controllers
                         signingCredentials: signingKey
                         );
 
-
-                    return Ok(new
+                    Object result_Token = new
                     {
                         token = new JwtSecurityTokenHandler().WriteToken(token),
                         expiration = DateTime.Now.AddDays(1),
-                    });
+                    };
+
+                    return Ok(ApiResponse<Object>.Success(result_Token));
                 }
 
             }
 
             ModelState.AddModelError("Password", "Password or Username is Invalid");
-            return BadRequest(ModelState);
+
+            var Errors = ModelState.Values.SelectMany(x => x.Errors)
+                                           .Select(x => x.ErrorMessage)
+                                           .ToList();
+
+
+            return BadRequest(ApiResponse<object>.Failure("Validation Faild", Errors));
         }
+
+
+
 
         [HttpPost("AdminRegister")]
         public async Task<IActionResult> AdminRegister(RegisterDto UserFromReq)
@@ -138,7 +161,7 @@ namespace Assinments.Controllers
             var user = await userManager.FindByNameAsync(UserFromReq.UserName);
 
             if (user != null)
-                return BadRequest("User Is Exist");
+                return BadRequest(ApiResponse<object>.Failure("User Is Exist"));
 
             var User = new ApplicationUser
             {
@@ -154,7 +177,7 @@ namespace Assinments.Controllers
             if (result.Succeeded)
             {
                 await userManager.AddToRoleAsync(User, "Admin");
-                return Ok("Created");
+                return Ok(ApiResponse<object>.Success(null, "Created"));
             }
 
             foreach (var item in result.Errors)
@@ -163,7 +186,12 @@ namespace Assinments.Controllers
 
             }
 
-            return BadRequest(ModelState);
+            var Errors = ModelState.Values.SelectMany(x => x.Errors)
+                                         .Select(x => x.ErrorMessage)
+                                         .ToList();
+
+
+            return BadRequest(ApiResponse<object>.Failure("Validation Faild", Errors));
         }
     }
 }

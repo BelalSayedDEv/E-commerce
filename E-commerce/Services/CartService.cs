@@ -1,8 +1,8 @@
-﻿using Assinments.DTos.Cart;
-using Assinments.Model;
-using Assinments.Repository;
+using E_commerce.DTos.Cart;
+using E_commerce.Model;
+using E_commerce.Repository;
 
-namespace Assinments.Services
+namespace E_commerce.Services
 {
     public class CartService : ICartService
     {
@@ -38,7 +38,6 @@ namespace Assinments.Services
 
             cartItemRepository.AddCartItem(cartItem);
             cartItemRepository.Save();
-
 
         }
 

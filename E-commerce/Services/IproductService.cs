@@ -4,19 +4,6 @@ namespace E_commerce.Services
 {
     public interface IproductService
     {
-        public List<ShowProductDto> GetAllProducts();
-
-        public ShowProductDto GetProductById(int productId);
-
-        public ShowProductDto AddProduct(AddProductDTO Product);
-
-        public EditProductDto EditProduct(int id, EditProductDto Product);
-
-        public int? DeleteProduct(int productId);
-
-
-
-        // version with async
 
         public Task<ShowProductDto?> GetProductByIdAsync(int productId);
         public Task<List<ShowProductDto>> GetAllProductsAsync();

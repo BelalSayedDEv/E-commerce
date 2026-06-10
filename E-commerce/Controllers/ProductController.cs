@@ -9,12 +9,10 @@ namespace E_commerce.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        //private readonly IProductRepository productRepository;
         private readonly IproductService productService;
 
         public ProductController(IproductService iproductService)
         {
-            //this.productRepository = productRepository;
             this.productService = iproductService;
         }
 
@@ -33,21 +31,6 @@ namespace E_commerce.Controllers
         [HttpGet("{Id}")]
         public async Task<ActionResult<AddProductDTO>> GetProductById(int Id)
         {
-            // Old Version 
-
-            //var Product = productRepository.GetProductById(Id);
-            //if (Product == null)
-            //    return NotFound();
-
-            //var DtoProduct = new AddProductDTO();
-
-            //DtoProduct.Name = Product.Name;
-            //DtoProduct.Description = Product.Description;
-            //DtoProduct.Price = Product.Price;
-            //DtoProduct.CategoryID = Product.CategoryID;
-
-            //return Ok(DtoProduct);
-
 
             var Product = await productService.GetProductByIdAsync(Id);
 
@@ -61,28 +44,6 @@ namespace E_commerce.Controllers
         public async Task<ActionResult> AddProduct(AddProductDTO ProductFromReq)
         {
 
-            //Old Version
-
-            //var Product = productRepository.GetProductByName(product.Name);
-            //if (Product != null)
-            //    return BadRequest("Name of Product is Exist");
-
-            //var SProduct = new Product();
-            //SProduct.Name = product.Name;
-            //SProduct.Description = product.Description;
-            //SProduct.Price = product.Price;
-            //SProduct.CategoryID = product.CategoryID;
-
-
-            //productRepository.AddProduct(SProduct);
-            //productRepository.Save();
-
-            //return CreatedAtAction("GetProductById", new { Id = SProduct.Id }, product);
-
-
-
-            // ------------------------------- version 2 -----------------------------------
-
             var product = await productService.AddProductAsync(ProductFromReq);
 
             if (product == null)
@@ -95,17 +56,7 @@ namespace E_commerce.Controllers
         [HttpPut("{Id}")]
         public async Task<IActionResult> EditProduct(int Id, EditProductDto ProductFromReq)
         {
-            //--------------------------- version 1 ----------------------------
-            //var ProductfromDatabase = productRepository.GetProductById(Id);
-            //if (ProductfromDatabase == null)
-            //    return NotFound();
 
-            //productRepository.UpdateProduct(Id, product);
-            //productRepository.Save();
-            //return NoContent();
-
-
-            //----------------------------- version 2 ----------------------------
 
             EditProductDto? product = await productService.EditProductAsync(Id, ProductFromReq);
 
@@ -119,20 +70,6 @@ namespace E_commerce.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteProduct(int Id)
         {
-            //---------------------- version 1 ----------------------------------
-
-
-            //    var Product = productRepository.GetProductById(Id);
-
-            //    if (Product == null)
-            //        return NotFound();
-
-            //    productRepository.deleteProduct(Id);
-            //    productRepository.Save();
-            //    return NoContent();
-            //}
-
-            // ----------------------- version 2 ---------------------------------
 
             var Product = await productService.DeleteProductAsync(Id);
             if (Product == null)

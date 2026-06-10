@@ -161,20 +161,18 @@ This project was built progressively, with each cycle introducing a new concept.
 | 6.3 | API Response Format | Generic `ApiResponse<T>` wrapper |
 | — | Git & GitHub | Repository setup, commits, push |
 
-### 🐛 Mistakes & Debugging Wins
+### 🐛 Debugging & Problem-Solving
 
-| Mistake | How I Fixed It | What I Learned |
-|---|---|---|
-| `cart.TotalPrice` always `0` in DB | Calculate totals dynamically from cart items | Never trust a stored calculated field |
-| FK constraint error on `OrderItem.OrderId` = `0` | Use navigation property `Order = order` instead of setting FK directly | EF Core relationship fixup |
-| Missing `Id = p.Id` in DTO mapping | Added mapping in `GetProductByIdAsync` | Always check every field in every DTO mapping |
-| Spaces in JWT config keys (`"Jwt :Key"`) | Removed spaces | JSON keys are sensitive to whitespace |
-| Short JWT secret (< 32 chars) | Extended to 32+ characters | Symmetric security key minimum length |
-| Unique index on `ProductId` in `OrderItems` | Dropped index via SQL | Check migration constraints before running |
-| `return null` outside `if` block (missing `{}`) | Added curly braces | C# without braces is dangerous |
-| `Console.WriteLine` for logging | Replaced with `ILogger<T>` | Logging needs persistence and structure |
-| Double `Save()` in `AddToCart` | Left as-is (design decision noted) | Atomic operations need single `SaveChanges()` |
-| Not checking `null` on navigation properties | Added `?.` null-conditional operator | Defensive coding matters |
+Throughout development, I encountered real-world backend challenges that improved my debugging and architectural thinking:
+
+- **FK constraint conflicts** — Resolved by understanding EF Core relationship fixup vs. direct FK assignment
+- **DTO mapping gaps** — Implemented complete field mapping discipline after discovering incomplete projections
+- **Configuration sensitivity** — Diagnosed subtle JWT configuration issues (key naming, minimum secret length)
+- **Migration validation** — Learned to review generated migrations before applying to avoid unintended constraints
+- **Logging architecture** — Evolved from `Console.WriteLine` to structured `ILogger<T>` with proper log levels
+- **Null-safety** — Adopted defensive coding patterns for navigation properties and async method returns
+
+Each of these was a practical lesson in production-grade API development, not just theory.
 
 ---
 
@@ -235,9 +233,7 @@ The API will be available at `http://localhost:5249` with Swagger UI at `/swagge
 
 **Belal Sayed** — Backend Developer (.NET)
 
-I built this project to grow from a junior who knows fundamentals into a developer who thinks about architecture, edge cases, logging, security, and production readiness.
-
-Every mistake here is a lesson learned. Every refactor is a skill gained. This is not a finished product — it's a living project that grows as I do.
+I built this project to demonstrate production-ready backend engineering — layered architecture, secure authentication, structured logging, and clean API design. This is a living project that continues to evolve with new features and best practices.
 
 ---
 

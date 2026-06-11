@@ -1,4 +1,4 @@
-namespace E_commerce.DTos
+﻿namespace E_Commerce.DTos
 {
     public class ShowCategoryDto
     {

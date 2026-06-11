@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace E_commerce.Migrations
+namespace E_Commerce.Migrations
 {
     /// <inheritdoc />
     public partial class AddOrderAndOrderItems : Migration

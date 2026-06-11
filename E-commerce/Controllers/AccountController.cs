@@ -1,6 +1,6 @@
-using E_commerce.DTos.AccountDTOs;
-using E_commerce.Model;
-using E_commerce.Repository;
+﻿using E_Commerce.DTos.AccountDTOs;
+using E_Commerce.Model;
+using E_Commerce.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -8,7 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace E_commerce.Controllers
+namespace E_Commerce.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

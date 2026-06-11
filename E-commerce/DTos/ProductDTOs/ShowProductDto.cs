@@ -1,4 +1,4 @@
-namespace E_commerce.DTos.ProductDTOs
+﻿namespace E_Commerce.DTos.ProductDTOs
 {
     public class ShowProductDto
     {

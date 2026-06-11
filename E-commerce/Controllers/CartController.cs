@@ -1,11 +1,11 @@
-using E_commerce.DTos.Cart;
-using E_commerce.Model;
-using E_commerce.Services;
+﻿using E_Commerce.DTos.Cart;
+using E_Commerce.Model;
+using E_Commerce.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-namespace E_commerce.Controllers
+namespace E_Commerce.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
@@ -34,12 +34,12 @@ namespace E_commerce.Controllers
 
         }
         [HttpGet]
-        public IActionResult GetCart()
+        public async Task<IActionResult> GetCart()
         {
 
             string id = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
-            CartDto? cartDto = cartService.GetCart(id);
+            CartDto? cartDto = await cartService.GetCartAsync(id);
 
             if (cartDto == null)
                 return NotFound(ApiResponse<object>.Failure("Not Found"));

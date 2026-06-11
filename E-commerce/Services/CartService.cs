@@ -1,8 +1,8 @@
-using E_commerce.DTos.Cart;
-using E_commerce.Model;
-using E_commerce.Repository;
+﻿using E_Commerce.DTos.Cart;
+using E_Commerce.Model;
+using E_Commerce.Repository;
 
-namespace E_commerce.Services
+namespace E_Commerce.Services
 {
     public class CartService : ICartService
     {
@@ -41,7 +41,7 @@ namespace E_commerce.Services
 
         }
 
-        public CartDto? GetCart(string userId)
+        public async Task<CartDto?> GetCartAsync(string userId)
         {
             var Cart = cartRepository.GetCartByUserId(userId);
 
@@ -56,7 +56,7 @@ namespace E_commerce.Services
             foreach (var item in CartItem)
             {
                 CartItemDto cartItem = new CartItemDto();
-                var product = productservice.GetProductById(item.ProductID);
+                var product = await productservice.GetProductByIdAsync(item.ProductID);
 
                 cartItem.ProductName = product.Name;
                 cartItem.Price = product.Price;

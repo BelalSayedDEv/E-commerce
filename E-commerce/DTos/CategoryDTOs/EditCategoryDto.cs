@@ -1,6 +1,6 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace E_commerce.DTos.CategoryDTOs
+namespace E_Commerce.DTos.CategoryDTOs
 {
     public class EditCategoryDto
     {

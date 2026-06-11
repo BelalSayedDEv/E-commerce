@@ -1,6 +1,7 @@
+﻿using E_Commerce.Model;
 using Microsoft.AspNetCore.Identity;
 
-namespace E_commerce.Model
+namespace E_Commerce.Model
 {
     public class ApplicationUser : IdentityUser
     {
@@ -10,5 +11,7 @@ namespace E_commerce.Model
         public Cart Cart { get; set; } = null!;
 
         public List<Order> Orders { get; set; } = new List<Order>();
+
+        public List<Comment> Comments { get; set; } = new List<Comment>();
     }
 }

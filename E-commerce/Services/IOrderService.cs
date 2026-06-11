@@ -1,6 +1,6 @@
-using E_commerce.DTos.Order;
+﻿using E_Commerce.DTos.Order;
 
-namespace E_commerce.Services
+namespace E_Commerce.Services
 {
     public interface IOrderService
     {

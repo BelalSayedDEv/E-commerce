@@ -1,4 +1,4 @@
-namespace E_commerce.Model
+﻿namespace E_Commerce.Model
 {
     public class ApiResponse<T>
     {

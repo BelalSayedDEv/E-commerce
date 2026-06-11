@@ -1,7 +1,7 @@
-using E_commerce.Model;
+﻿using E_Commerce.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace E_commerce.Repository
+namespace E_Commerce.Repository
 {
     public class ProductRepository : IProductRepository
     {

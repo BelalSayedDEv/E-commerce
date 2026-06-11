@@ -1,9 +1,9 @@
-using E_commerce.DTos.ProductDTOs;
-using E_commerce.Model;
-using E_commerce.Services;
+﻿using E_Commerce.DTos.ProductDTOs;
+using E_Commerce.Model;
+using E_Commerce.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace E_commerce.Controllers
+namespace E_Commerce.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

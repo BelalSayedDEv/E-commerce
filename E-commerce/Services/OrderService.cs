@@ -1,8 +1,8 @@
-using E_commerce.DTos.Order;
-using E_commerce.Model;
-using E_commerce.Repository;
+﻿using E_Commerce.DTos.Order;
+using E_Commerce.Model;
+using E_Commerce.Repository;
 
-namespace E_commerce.Services
+namespace E_Commerce.Services
 {
     public class OrderService : IOrderService
     {

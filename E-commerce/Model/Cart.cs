@@ -1,6 +1,6 @@
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace E_commerce.Model
+namespace E_Commerce.Model
 {
     public class Cart
     {

@@ -1,9 +1,9 @@
-using E_commerce.DTos;
-using E_commerce.DTos.CategoryDTOs;
-using E_commerce.Model;
-using E_commerce.Repository;
+﻿using E_Commerce.DTos;
+using E_Commerce.DTos.CategoryDTOs;
+using E_Commerce.Model;
+using E_Commerce.Repository;
 
-namespace E_commerce.Services
+namespace E_Commerce.Services
 {
     public class CategoryService : ICategoryService
     {

@@ -1,7 +1,7 @@
-using E_commerce.DTos;
-using E_commerce.DTos.CategoryDTOs;
+﻿using E_Commerce.DTos;
+using E_Commerce.DTos.CategoryDTOs;
 
-namespace E_commerce.Services
+namespace E_Commerce.Services
 {
     public interface ICategoryService
     {

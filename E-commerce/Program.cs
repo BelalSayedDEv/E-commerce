@@ -1,14 +1,14 @@
-
-using E_commerce.Model;
-using E_commerce.Repository;
-using E_commerce.Services;
+﻿
+using E_Commerce.Model;
+using E_Commerce.Repository;
+using E_Commerce.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace E_commerce
+namespace E_Commerce
 {
     public class Program
     {
@@ -93,6 +93,10 @@ namespace E_commerce
             builder.Services.AddScoped<IOrderService, OrderService>();
 
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
+            builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+            builder.Services.AddScoped<ICommentService, CommentService>();
+
             // Add services to the container.
 
             builder.Services.AddControllers();

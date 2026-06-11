@@ -1,6 +1,6 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace E_commerce.DTos.AccountDTOs
+namespace E_Commerce.DTos.AccountDTOs
 {
     public class RegisterDto
     {

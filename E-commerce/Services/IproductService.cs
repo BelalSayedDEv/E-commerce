@@ -1,6 +1,6 @@
-using E_commerce.DTos.ProductDTOs;
+﻿using E_Commerce.DTos.ProductDTOs;
 
-namespace E_commerce.Services
+namespace E_Commerce.Services
 {
     public interface IproductService
     {

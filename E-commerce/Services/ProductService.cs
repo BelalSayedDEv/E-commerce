@@ -1,8 +1,8 @@
-using E_commerce.DTos.ProductDTOs;
-using E_commerce.Model;
-using E_commerce.Repository;
+﻿using E_Commerce.DTos.ProductDTOs;
+using E_Commerce.Model;
+using E_Commerce.Repository;
 
-namespace E_commerce.Services
+namespace E_Commerce.Services
 {
     public class ProductService : IproductService
     {
@@ -119,7 +119,7 @@ namespace E_commerce.Services
 
         public async Task<ShowProductDto?> EditeProductStockAsync(int Id, UpdateProductStock updateProductStock)
         {
-            var product = productRepository.GetProductById(Id);
+            var product = await productRepository.GetProductByIdAsync(Id);
 
 
             if (product == null)

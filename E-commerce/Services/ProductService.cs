@@ -13,13 +13,16 @@ namespace E_Commerce.Services
             this.productRepository = productRepository;
         }
 
-
-
-        public async Task<List<ShowProductDto>> GetAllProductsAsync()
+        public async Task<ProductCountWithList?> GetAllProductsAsync(int Page, int PageSize, string? searchTerm)
         {
-            var Products = await productRepository.GetProductsAsync();
+            var Products = await productRepository.GetProductsAsync(Page, PageSize, searchTerm);
 
-            return Products.Select(p => new ShowProductDto
+            var Count = await productRepository.GetProductCountAsync(searchTerm);
+
+            if (Products == null || Count == null)
+                return null;
+
+            var products = Products.Select(p => new ShowProductDto
             {
                 Name = p.Name,
                 Description = p.Description,
@@ -29,7 +32,14 @@ namespace E_Commerce.Services
                 Id = p.Id
             }).ToList();
 
+            return new ProductCountWithList
+            {
+                ProductList = products,
+                TotalCount = Count ?? 0
+            };
         }
+
+
         public async Task<ShowProductDto?> GetProductByIdAsync(int productId)
         {
 
@@ -141,5 +151,6 @@ namespace E_Commerce.Services
 
             return ShowProductDto;
         }
+
     }
 }

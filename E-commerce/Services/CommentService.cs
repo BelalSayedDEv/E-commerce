@@ -12,14 +12,15 @@ namespace E_Commerce.Services
         {
             this.commentRepository = commentRepository;
         }
-        public async Task<ShowCommentDto?> Add(string UserId, AddCommentDto addCommentDto)
+        public async Task<ShowCommentDto?> Add(string UserName, string UserId, AddCommentDto addCommentDto)
         {
             Comment comment = new Comment()
             {
                 Description = addCommentDto.Description,
                 ProductId = addCommentDto.ProductId,
                 UserId = UserId,
-                CreatedAt = DateTime.Now
+                CreatedAt = DateTime.Now,
+                Username = UserName,
             };
 
             var Comment = await commentRepository.AddComment(comment);
@@ -35,6 +36,8 @@ namespace E_Commerce.Services
             showCommentDto.Comment = Comment.Description;
             showCommentDto.ProductId = Comment.ProductId;
             showCommentDto.CreatedAt = Comment.CreatedAt;
+            showCommentDto.username = Comment.Username;
+
             return showCommentDto;
 
         }
@@ -56,6 +59,7 @@ namespace E_Commerce.Services
                 commentDto.Comment = Comment.Description;
                 commentDto.ProductId = Comment.ProductId;
                 commentDto.CreatedAt = Comment.CreatedAt;
+                commentDto.username = Comment.Username;
                 commentHistoryDto.Comments.Add(commentDto);
 
             }
@@ -79,6 +83,7 @@ namespace E_Commerce.Services
                 commentDto.Comment = Comment.Description;
                 commentDto.ProductId = Comment.ProductId;
                 commentDto.CreatedAt = Comment.CreatedAt;
+                commentDto.username = Comment.Username;
 
                 commentHistoryDto.Comments.Add(commentDto);
 
@@ -102,6 +107,7 @@ namespace E_Commerce.Services
             commentDto.Comment = comment.Description;
             commentDto.ProductId = comment.ProductId;
             commentDto.CreatedAt = comment.CreatedAt;
+            commentDto.username = comment.Username;
 
             await commentRepository.Save();
 
@@ -109,9 +115,9 @@ namespace E_Commerce.Services
 
         }
 
-        public async Task<bool> DeleteComment(string UserId, int CommentId)
+        public async Task<bool> DeleteComment(string Role, string UserId, int CommentId)
         {
-            var result = await commentRepository.DeleteComment(UserId, CommentId);
+            var result = await commentRepository.DeleteComment(Role, UserId, CommentId);
 
             if (result)
                 await commentRepository.Save();

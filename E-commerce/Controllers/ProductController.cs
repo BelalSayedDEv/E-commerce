@@ -17,14 +17,14 @@ namespace E_Commerce.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllProducts()
+        public async Task<IActionResult> GetAllProducts([FromQuery] int Page, [FromQuery] int PageSize, [FromQuery] string? searchTerm)
         {
-            var products = await productService.GetAllProductsAsync();
+            var products = await productService.GetAllProductsAsync(Page, PageSize, searchTerm);
 
-            if (products == null)
+            if (products == null || products.ProductList == null || products.TotalCount == 0)
                 return NotFound(ApiResponse<object>.Failure("No Found"));
 
-            return Ok(ApiResponse<List<ShowProductDto>>.Success(products));
+            return Ok(ApiResponse<ProductCountWithList>.Success(products));
         }
 
 

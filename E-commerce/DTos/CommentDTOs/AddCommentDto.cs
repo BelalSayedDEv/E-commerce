@@ -10,5 +10,6 @@ namespace E_Commerce.DTos.CommentDTOs
 
         [Required]
         public int ProductId { get; set; }
+
     }
 }

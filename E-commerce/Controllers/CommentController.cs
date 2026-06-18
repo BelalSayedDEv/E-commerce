@@ -19,6 +19,8 @@ namespace E_Commerce.Controllers
             this.commentService = commentService;
         }
 
+
+
         [AllowAnonymous]
         [HttpGet("{Id}")]
         public async Task<IActionResult> GetCommentByProductId(int Id)
@@ -29,14 +31,19 @@ namespace E_Commerce.Controllers
                 return NotFound(ApiResponse<object>.Failure("Comment Not Found"));
 
             return Ok(ApiResponse<CommentHistoryDto>.Success(commentHistoryDto));
+
         }
+
+
+
 
         [HttpPost]
         public async Task<IActionResult> AddComment(AddCommentDto addCommentDto)
         {
             string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
-            var Comment = await commentService.Add(UserId, addCommentDto);
+            string UserName = User.FindFirstValue(ClaimTypes.Name)!;
+            var Comment = await commentService.Add(UserName, UserId, addCommentDto);
 
             if (Comment == null)
                 return BadRequest(ApiResponse<object>.Failure("There Error Here"));
@@ -65,7 +72,9 @@ namespace E_Commerce.Controllers
         {
             string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
-            var result = await commentService.DeleteComment(UserId, CommentId);
+            string Role = User.FindFirstValue(ClaimTypes.Role)!;
+
+            var result = await commentService.DeleteComment(Role, UserId, CommentId);
 
             if (result)
                 return Ok(ApiResponse<object>.Success(null, "Comment Deleted"));

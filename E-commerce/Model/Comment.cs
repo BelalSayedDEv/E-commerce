@@ -1,5 +1,4 @@
-﻿using E_Commerce.Model;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace E_Commerce.Model
 {
@@ -11,6 +10,7 @@ namespace E_Commerce.Model
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+        public string Username { get; set; } = string.Empty;
 
         [ForeignKey("User")]
         public string UserId { get; set; } = string.Empty;

@@ -97,6 +97,7 @@ namespace E_Commerce
             builder.Services.AddScoped<ICommentRepository, CommentRepository>();
             builder.Services.AddScoped<ICommentService, CommentService>();
 
+            builder.Services.AddScoped<IProfileService, ProfileService>();
             // Add services to the container.
 
             builder.Services.AddControllers();

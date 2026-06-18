@@ -6,9 +6,11 @@ namespace E_Commerce.Repository
     {
         public Order Add(Order order);
 
-        public List<Order> GetOrders(string UserId);
+        public List<Order> GetOrders();
 
         public Order? GetOrderById(int Id);
         public void Save();
+
+        public ApplicationDbContext Context();
     }
 }

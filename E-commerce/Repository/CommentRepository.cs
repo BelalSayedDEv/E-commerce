@@ -36,15 +36,24 @@ namespace E_Commerce.Repository
         }
 
 
-        public async Task<bool> DeleteComment(string UserId, int CommentId)
+        public async Task<bool> DeleteComment(string Role, string UserId, int CommentId)
         {
-            var Comment = await Context.Comments.SingleOrDefaultAsync
-                (c => c.Id == CommentId && c.UserId == UserId);
+            Comment? comment = null;
+            if (Role != "Admin")
+            {
+                comment = await Context.Comments.SingleOrDefaultAsync
+                   (c => c.Id == CommentId && c.UserId == UserId);
+            }
+            else
+            {
+                comment = await Context.Comments.SingleOrDefaultAsync
+                   (c => c.Id == CommentId);
+            }
 
-            if (Comment == null)
+            if (comment == null)
                 return false;
 
-            Context.Comments.Remove(Comment);
+            Context.Comments.Remove(comment);
 
             return true;
         }

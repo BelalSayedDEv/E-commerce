@@ -45,6 +45,21 @@ namespace E_Commerce.Controllers
             return Ok(ApiResponse<List<OrderDto>>.Success(OrderHistory));
         }
 
+        [HttpGet("admin/History")]
+        public IActionResult GetOrdersHistoryForAdmin()
+        {
+            string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+
+            var OrderHistory = orderService.GetOrdersHistoryForAdmin();
+
+            if (OrderHistory == null)
+                return NotFound(ApiResponse<object>.Failure("No Orders Found"));
+
+            return Ok(ApiResponse<List<OrderDto>>.Success(OrderHistory));
+        }
+
+
+
         [HttpPatch("{Id}/Status")]
         [Authorize(Roles = "Admin")]
         public IActionResult UpdateStatus(int Id, string Status)
@@ -55,13 +70,7 @@ namespace E_Commerce.Controllers
 
             return Ok(ApiResponse<OrderDto>.Success(order));
         }
-        [AllowAnonymous]
 
-        [HttpGet("test-error")]
-        public IActionResult TestError()
-        {
-            throw new Exception("This is a test exception!");
-        }
 
     }
 }

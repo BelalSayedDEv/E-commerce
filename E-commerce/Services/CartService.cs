@@ -34,7 +34,7 @@ namespace E_Commerce.Services
 
             cartItem.ProductID = dto.ProductId;
             cartItem.Quantity = dto.Quantity;
-            cartItem.CartId = cart.Id;
+            cartItem.Cart = cart;
 
             cartItemRepository.AddCartItem(cartItem);
             cartItemRepository.Save();
@@ -57,14 +57,15 @@ namespace E_Commerce.Services
             {
                 CartItemDto cartItem = new CartItemDto();
                 var product = await productservice.GetProductByIdAsync(item.ProductID);
-
-                cartItem.ProductName = product.Name;
-                cartItem.Price = product.Price;
-                cartItem.Quantity = item.Quantity;
-                cartItem.SubTotal = cartItem.Price * cartItem.Quantity;
-                cartItem.Id = item.Id;
-                TotalPrice += cartItem.SubTotal;
-
+                if (product is not null)
+                {
+                    cartItem.ProductName = product.Name;
+                    cartItem.Price = product.Price;
+                    cartItem.Quantity = item.Quantity;
+                    cartItem.SubTotal = cartItem.Price * cartItem.Quantity;
+                    cartItem.Id = item.Id;
+                    TotalPrice += cartItem.SubTotal;
+                }
                 cartItems.Add(cartItem);
             }
 

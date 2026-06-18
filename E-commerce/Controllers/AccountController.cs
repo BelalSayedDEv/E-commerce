@@ -100,6 +100,7 @@ namespace E_Commerce.Controllers
 
                     claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id));
                     claims.Add(new Claim(ClaimTypes.Name, user.UserName!));
+                    claims.Add(new Claim(CustomClaims.FullName, user.FullName));
 
                     // generated jti  Id token 
 
@@ -131,13 +132,13 @@ namespace E_Commerce.Controllers
                         signingCredentials: signingKey
                         );
 
-                    Object result_Token = new
+                    object result_Token = new
                     {
                         token = new JwtSecurityTokenHandler().WriteToken(token),
                         expiration = DateTime.Now.AddDays(1),
                     };
 
-                    return Ok(ApiResponse<Object>.Success(result_Token));
+                    return Ok(ApiResponse<object>.Success(result_Token));
                 }
 
             }

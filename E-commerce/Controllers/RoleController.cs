@@ -21,6 +21,8 @@ namespace E_Commerce.Controllers
 
         public async Task<IActionResult> AddRole(AddRole RoleDto)
         {
+
+
             var Role = new IdentityRole()
             {
 
@@ -30,16 +32,18 @@ namespace E_Commerce.Controllers
             var result = await roleManager.CreateAsync(Role);
 
             if (result.Succeeded)
-                return Ok(ApiResponse<Object>.Success(null, "Role Created"));
+                return Ok(ApiResponse<object>.Success(null, "Role Created"));
 
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError("", error.Description);
             }
 
+
+
             var Errors = ModelState.Values.SelectMany(x => x.Errors)
-                                         .Select(x => x.ErrorMessage)
-                                         .ToList();
+                                    .Select(x => x.ErrorMessage)
+                                    .ToList();
 
             return BadRequest(ApiResponse<object>.Failure("Validation Faild", Errors));
         }

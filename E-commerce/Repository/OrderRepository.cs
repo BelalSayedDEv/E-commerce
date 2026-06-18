@@ -18,16 +18,16 @@ namespace E_Commerce.Repository
             return order;
         }
 
-        public List<Order> GetOrders(string UserId)
+        public List<Order> GetOrders()
         {
             var Orders = context.Orders
                 .Include(o => o.Items)
                 .ThenInclude(i => i.Product)
-                .Where(o => o.UserId == UserId)
                 .OrderByDescending(o => o.OrderDate)
                 .ToList();
             return Orders;
         }
+
         public Order? GetOrderById(int Id)
         {
             return context.Orders
@@ -39,6 +39,11 @@ namespace E_Commerce.Repository
         public void Save()
         {
             context.SaveChanges();
+        }
+
+        public ApplicationDbContext Context()
+        {
+            return this.context;
         }
     }
 }

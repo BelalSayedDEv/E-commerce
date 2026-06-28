@@ -89,5 +89,19 @@ namespace E_Commerce.Controllers
             return Ok(ApiResponse<ShowProductDto>.Success(Prodcut));
         }
 
+        [HttpGet("Test")]
+        public async Task<IActionResult> GetProductsSpacific([FromQuery] int Page, [FromQuery] int PageSize, [FromQuery] string? searchTerm)
+        {
+            var products = await productService.GetAllProductsAsync(Page, PageSize, searchTerm);
+
+            var SelectedProducts = products.ProductList.Select(p => new
+            {
+                Name = p.Name,
+                Price = p.Price,
+            });
+
+            return Ok(ApiResponse<object>.Success(SelectedProducts));
+        }
+
     }
 }

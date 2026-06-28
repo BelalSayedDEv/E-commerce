@@ -13,7 +13,7 @@ namespace E_Commerce.Repository
         }
         public List<Category>? GetCategories()
         {
-            var Categories = Context.Categories.Include(c => c.Products).ToList();
+            var Categories = Context.Categories.AsNoTracking().Include(c => c.Products).ToList();
             return Categories;
         }
 

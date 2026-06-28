@@ -20,7 +20,7 @@ namespace E_Commerce.Repository
 
         public List<Order> GetOrders()
         {
-            var Orders = context.Orders
+            var Orders = context.Orders.AsNoTracking()
                 .Include(o => o.Items)
                 .ThenInclude(i => i.Product)
                 .OrderByDescending(o => o.OrderDate)
@@ -28,6 +28,17 @@ namespace E_Commerce.Repository
             return Orders;
         }
 
+
+        public List<Order> GetOrders(string userId)
+        {
+            var Orders = context.Orders.AsNoTracking()
+                .Include(o => o.Items)
+                .ThenInclude(i => i.Product)
+                .Where(o => o.UserId == userId)
+                .OrderByDescending(o => o.OrderDate)
+                .ToList();
+            return Orders;
+        }
         public Order? GetOrderById(int Id)
         {
             return context.Orders

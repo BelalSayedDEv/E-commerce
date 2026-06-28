@@ -32,6 +32,7 @@ namespace E_Commerce.Controllers
             return Ok(ApiResponse<OrderDto>.Success(result));
         }
 
+        [AllowAnonymous]
         [HttpGet("History")]
         public IActionResult GetOrdersResult()
         {
@@ -45,6 +46,7 @@ namespace E_Commerce.Controllers
             return Ok(ApiResponse<List<OrderDto>>.Success(OrderHistory));
         }
 
+        [AllowAnonymous]
         [HttpGet("admin/History")]
         public IActionResult GetOrdersHistoryForAdmin()
         {

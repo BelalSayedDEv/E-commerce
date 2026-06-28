@@ -14,14 +14,15 @@ namespace E_Commerce
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
 
+            var builder = WebApplication.CreateBuilder(args);
 
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("CS"));
-
+                options.UseSqlServer(builder.Configuration.GetConnectionString("CS"))
+                .LogTo(Console.WriteLine, LogLevel.Information)
+                .EnableSensitiveDataLogging();
             });
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -75,9 +76,6 @@ namespace E_Commerce
 
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.Zero,
-
-
-
                 };
             });
 
@@ -186,6 +184,9 @@ namespace E_Commerce
             app.MapControllers();
 
             app.Run();
+
+
+
         }
     }
 }

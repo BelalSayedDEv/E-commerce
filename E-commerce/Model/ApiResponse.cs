@@ -18,7 +18,6 @@
                 Data = _Data,
                 IsSuccess = true
             };
-
         }
         public static ApiResponse<T> Failure(string Message, List<string>? Errors = null, int StatusCode = 400)
         {

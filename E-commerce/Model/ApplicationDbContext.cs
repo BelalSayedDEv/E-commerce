@@ -20,5 +20,9 @@ namespace E_Commerce.Model
 
 
         }
+
+        public ApplicationDbContext()
+        {
+        }
     }
 }

@@ -1,5 +1,4 @@
-﻿using E_Commerce.Model;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace E_Commerce.Model
 {
@@ -24,7 +23,7 @@ namespace E_Commerce.Model
         public int CategoryID { get; set; }
         public Category Category { get; set; } = null!;
 
-        public OrderItem OrderItem { get; set; } = null!;
+        public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
         public List<Comment> Comments { get; set; } = new List<Comment>();
     }

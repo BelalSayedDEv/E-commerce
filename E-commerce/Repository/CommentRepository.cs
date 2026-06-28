@@ -73,7 +73,7 @@ namespace E_Commerce.Repository
 
         public async Task<List<Comment>?> GetHistory(string UserId)
         {
-            var Comments = await Context.Comments.Where(p => p.UserId == UserId).ToListAsync();
+            var Comments = await Context.Comments.AsNoTracking().Where(p => p.UserId == UserId).ToListAsync();
 
             return Comments;
         }

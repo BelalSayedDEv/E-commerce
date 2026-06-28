@@ -27,9 +27,9 @@ namespace E_Commerce.Services
 
         public List<OrderDto>? GetOrdersHistory(string userId)
         {
-            var Orders = orderRepository.GetOrders().Where(o => o.UserId == userId);
+            var Orders = orderRepository.GetOrders(userId);
 
-            if (Orders == null)
+            if (!Orders.Any())
                 return null;
 
             return Orders.Select(o => new OrderDto
@@ -48,7 +48,7 @@ namespace E_Commerce.Services
         {
             var Orders = orderRepository.GetOrders();
 
-            if (Orders == null)
+            if (!Orders.Any())
                 return null;
 
             return Orders.Select(o => new OrderDto
@@ -83,7 +83,7 @@ namespace E_Commerce.Services
 
             var cartItems = cartItemRepository.GetCartItemsByCartId(cart.Id);
 
-            if (cartItems.Count == 0)
+            if (!cartItems.Any())
             {
                 logger.LogWarning("Cart items is empty for {CartId}", cart.Id);
                 return null;

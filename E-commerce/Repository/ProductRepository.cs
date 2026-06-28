@@ -22,14 +22,13 @@ namespace E_Commerce.Repository
 
         public async Task<List<Product>?> GetProductsAsync(int page, int pageSize, string? SearchTerm)
         {
-            //var products = await Context.Products.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
-
             var query = Context.Products.AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(SearchTerm))
                 query = query.Where(p => p.Name.Contains(SearchTerm));
 
-            return await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+            Console.WriteLine(query.ToQueryString());
+            return await query.Skip((page - 1) * pageSize).Take(pageSize).AsNoTracking().ToListAsync();
         }
 
         public async Task<Product?> GetProductByNameAsync(string name)
@@ -61,7 +60,7 @@ namespace E_Commerce.Repository
 
         public async Task<int?> GetProductCountAsync(string? searchTerm)
         {
-            var query = Context.Products.AsQueryable();
+            var query = Context.Products.AsNoTracking().AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
                 query = query.Where(p => p.Name.Contains(searchTerm));

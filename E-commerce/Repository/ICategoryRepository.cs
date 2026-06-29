@@ -5,7 +5,7 @@ namespace E_Commerce.Repository
     public interface ICategoryRepository
     {
 
-        public List<Category>? GetCategories();
+        public List<Category> GetCategories();
 
         public void Save();
 

@@ -19,50 +19,22 @@ namespace E_Commerce.Controllers
             this.categoryService = categoryService;
         }
 
+
         [HttpGet]
-        public ActionResult<List<ShowCategoryDto>> GetAllCategory()
+        public ActionResult<IEnumerable<ShowCategoryDto>> GetAllCategory()
         {
-            //---------------------- version 1
 
-            //var Listdto = new List<ShowCategoryDto>();
-            //var Categories = categoryRepository.GetCategories();
+            var categories = categoryService.GetCategories();
 
-            //if (Categories == null)
-            //    return NotFound();
-
-            //foreach (var item in Categories)
-            //{
-            //    var dto = new ShowCategoryDto();
-            //    dto.Name = item.Name;
-            //    dto.ProductsName = item.Products.Select(p => p.Name).ToList();
-            //    Listdto.Add(dto);
-            //}
-
-            //return Ok(Listdto);
-            // -----------------------------version 2
-
-            List<ShowCategoryDto> categories = categoryService.GetCategories().ToList();
-            if (categories == null)
-                return NotFound(ApiResponse<object>.Failure("Not Found"));
-
-
-            return Ok(ApiResponse<List<ShowCategoryDto>>.Success(categories));
+            return Ok(ApiResponse<IEnumerable<ShowCategoryDto>>.Success(categories));
         }
 
         [HttpGet("{Id}")]
         public ActionResult<ShowCategoryDto> GetCategorybyId(int Id)
         {
 
-            //--------------------- version 1 
-            //var ExistingCategory = categoryRepository.GetCategoryById(Id);
-            //if (ExistingCategory == null)
-            //    return NotFound();
-
-
-            //return Ok(ExistingCategory);
-            //-------------------------- version 2
-
             var category = categoryService.GetCategoryById(Id);
+
             if (category == null)
                 return NotFound(ApiResponse<object>.Failure("Not Found"));
 
@@ -73,26 +45,11 @@ namespace E_Commerce.Controllers
         [HttpPost]
         public ActionResult AddCategory(AddCategoryDto category)
         {
-            //---------------- version 1
-            //var ExistingCategory = categoryRepository.GetCategoryByName(category.Name);
-            //if (ExistingCategory != null)
-            //    return BadRequest("This Category is Exist");
-
-            //var Category = new Category();
-
-            //Category.Name = category.Name;
-
-            //categoryRepository.AddCategory(Category);
-            //categoryRepository.Save();
-
-            //return CreatedAtAction("GetCategorybyId", new { Id = Category.Id }, Category);
-
-            // ------------------------ version 2
 
             var Category = categoryService.AddCategory(category);
 
             if (Category == null)
-                return BadRequest(ApiResponse<object>.Failure("Category is already exist"));
+                return Conflict(ApiResponse<object>.Failure("Category is already exist"));
 
             categoryService.Save();
 
@@ -102,6 +59,9 @@ namespace E_Commerce.Controllers
         [HttpPut]
         public ActionResult EditCategory(int Id, EditCategoryDto category)
         {
+            if (Id <= 0)
+                return BadRequest("Less than zero");
+
             var Category = categoryService.EditCategory(Id, category);
 
             if (Category == null)
@@ -112,9 +72,12 @@ namespace E_Commerce.Controllers
             return Ok(ApiResponse<ShowCategoryDto>.Success(Category));
         }
 
-        [HttpDelete]
+        [HttpDelete("{Id}")]
         public ActionResult DeleteCategory(int Id)
         {
+            if (Id <= 0)
+                return BadRequest("Less than zero");
+
             var Category = categoryService.DeleteCategory(Id);
 
             if (Category == null)
@@ -122,7 +85,7 @@ namespace E_Commerce.Controllers
 
             categoryService.Save();
 
-            return Ok(ApiResponse<object>.Success(null, "Deleted Successfully")); ;
+            return NoContent(); ;
         }
 
     }

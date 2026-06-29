@@ -4,7 +4,7 @@ namespace E_Commerce.Repository
 {
     public interface IProductRepository
     {
-        public Task<List<Product>?> GetProductsAsync(int page, int pageSize, string? searchTerm);
+        public Task<List<Product>> GetProductsAsync(int page, int pageSize, string? searchTerm);
         public Task<Product?> GetProductByIdAsync(int Id);
         public Task<int?> GetProductCountAsync(string? searchTerm);
         public Task<Product?> GetProductByNameAsync(string name);

@@ -19,23 +19,15 @@ namespace E_Commerce.Controllers
             this.commentService = commentService;
         }
 
-
-
         [AllowAnonymous]
-        [HttpGet("{Id}")]
+        [HttpGet("product-id/{Id}")]
         public async Task<IActionResult> GetCommentByProductId(int Id)
         {
-            var commentHistoryDto = await commentService.FindByProdcutId(Id);
-
-            if (commentHistoryDto == null)
-                return NotFound(ApiResponse<object>.Failure("Comment Not Found"));
+            var commentHistoryDto = await commentService.FindByProductId(Id);
 
             return Ok(ApiResponse<CommentHistoryDto>.Success(commentHistoryDto));
 
         }
-
-
-
 
         [HttpPost]
         public async Task<IActionResult> AddComment(AddCommentDto addCommentDto)
@@ -43,16 +35,18 @@ namespace E_Commerce.Controllers
             string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
             string UserName = User.FindFirstValue(ClaimTypes.Name)!;
+
             var Comment = await commentService.Add(UserName, UserId, addCommentDto);
 
             if (Comment == null)
-                return BadRequest(ApiResponse<object>.Failure("There Error Here"));
+                return BadRequest(ApiResponse<object>.Failure("Product is not exist"));
 
-            return Ok(ApiResponse<ShowCommentDto>.Success(Comment));
+            return CreatedAtAction(nameof(GetCommentByProductId), new { Id = Comment.Id }, ApiResponse<ShowCommentDto>.Success(Comment));
         }
 
+
         [HttpPatch]
-        public async Task<IActionResult> EditeComment(UpdateCommetDto updateCommetDto)
+        public async Task<IActionResult> EditComment(UpdateCommetDto updateCommetDto)
         {
             string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
@@ -60,38 +54,37 @@ namespace E_Commerce.Controllers
             var Comment = await commentService.UpdateComment(UserId, updateCommetDto);
 
             if (Comment == null)
-                return NotFound(ApiResponse<object>.Failure("Comment is Not Found "));
+                return NotFound(ApiResponse<object>.Failure("Comment is Not Found"));
 
             return Ok(ApiResponse<ShowCommentDto>.Success(Comment));
 
         }
 
-        [HttpDelete("{CommentId}")]
 
-        public async Task<IActionResult> DeleteComment(int CommentId)
+
+        [HttpDelete("{Id}")]
+
+        public async Task<IActionResult> DeleteComment(int Id)
         {
             string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
             string Role = User.FindFirstValue(ClaimTypes.Role)!;
 
-            var result = await commentService.DeleteComment(Role, UserId, CommentId);
+            var result = await commentService.DeleteComment(Role, UserId, Id);
 
             if (result)
-                return Ok(ApiResponse<object>.Success(null, "Comment Deleted"));
+                return NoContent();
 
             return NotFound(ApiResponse<object>.Failure("Comment Not Found"));
 
         }
 
-        [HttpGet("History")]
+        [HttpGet]
         public async Task<IActionResult> GetCommentHistoryByUserId()
         {
             string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
             var History = await commentService.GetHistoryOfCommentByUserId(UserId);
-
-            if (History == null)
-                return NotFound(ApiResponse<object>.Failure("Comment Not Found"));
 
             return Ok(ApiResponse<CommentHistoryDto>.Success(History));
         }

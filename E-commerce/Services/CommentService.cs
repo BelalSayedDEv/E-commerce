@@ -7,13 +7,20 @@ namespace E_Commerce.Services
     public class CommentService : ICommentService
     {
         private readonly ICommentRepository commentRepository;
+        private readonly IProductRepository productRepository;
 
-        public CommentService(ICommentRepository commentRepository)
+        public CommentService(ICommentRepository commentRepository, IProductRepository productRepository)
         {
             this.commentRepository = commentRepository;
+            this.productRepository = productRepository;
         }
         public async Task<ShowCommentDto?> Add(string UserName, string UserId, AddCommentDto addCommentDto)
         {
+
+            var product = await productRepository.GetProductByIdAsync(addCommentDto.ProductId);
+            if (product == null)
+                return null;
+
             Comment comment = new Comment()
             {
                 Description = addCommentDto.Description,
@@ -23,43 +30,38 @@ namespace E_Commerce.Services
                 Username = UserName,
             };
 
-            var Comment = await commentRepository.AddComment(comment);
+            await commentRepository.AddComment(comment);
 
             await commentRepository.Save();
 
-            if (Comment == null)
-                return null;
 
             ShowCommentDto showCommentDto = new ShowCommentDto();
 
-            showCommentDto.Id = Comment.Id;
-            showCommentDto.Comment = Comment.Description;
-            showCommentDto.ProductId = Comment.ProductId;
-            showCommentDto.CreatedAt = Comment.CreatedAt;
-            showCommentDto.username = Comment.Username;
+            showCommentDto.Id = comment.Id;
+            showCommentDto.UserName = comment.Username;
+            showCommentDto.Comment = comment.Description;
+            showCommentDto.ProductId = comment.ProductId;
+            showCommentDto.CreatedAt = comment.CreatedAt;
 
             return showCommentDto;
-
         }
 
 
-        public async Task<CommentHistoryDto?> FindByProdcutId(int ProductId)
+        public async Task<CommentHistoryDto> FindByProductId(int ProductId)
         {
             var Comments = await commentRepository.FindByProductId(ProductId);
-
-            if (Comments == null)
-                return null;
 
             CommentHistoryDto commentHistoryDto = new CommentHistoryDto();
 
             foreach (var Comment in Comments)
             {
                 ShowCommentDto commentDto = new ShowCommentDto();
+
                 commentDto.Id = Comment.Id;
+                commentDto.UserName = Comment.Username;
                 commentDto.Comment = Comment.Description;
                 commentDto.ProductId = Comment.ProductId;
                 commentDto.CreatedAt = Comment.CreatedAt;
-                commentDto.username = Comment.Username;
                 commentHistoryDto.Comments.Add(commentDto);
 
             }
@@ -67,23 +69,21 @@ namespace E_Commerce.Services
             return commentHistoryDto;
         }
 
-        public async Task<CommentHistoryDto?> GetHistoryOfCommentByUserId(string UserId)
+        public async Task<CommentHistoryDto> GetHistoryOfCommentByUserId(string UserId)
         {
             var Comments = await commentRepository.GetHistory(UserId);
-
-            if (Comments == null)
-                return null;
 
             CommentHistoryDto commentHistoryDto = new CommentHistoryDto();
 
             foreach (var Comment in Comments)
             {
                 ShowCommentDto commentDto = new ShowCommentDto();
+
                 commentDto.Id = Comment.Id;
+                commentDto.UserName = Comment.Username;
                 commentDto.Comment = Comment.Description;
                 commentDto.ProductId = Comment.ProductId;
                 commentDto.CreatedAt = Comment.CreatedAt;
-                commentDto.username = Comment.Username;
 
                 commentHistoryDto.Comments.Add(commentDto);
 
@@ -94,7 +94,7 @@ namespace E_Commerce.Services
 
         public async Task<ShowCommentDto?> UpdateComment(string UserId, UpdateCommetDto updateCommetDto)
         {
-            var comment = await commentRepository.FindCommentById(UserId, updateCommetDto);
+            var comment = await commentRepository.FindCommentById(updateCommetDto.CommentId, UserId);
 
             if (comment == null)
                 return null;
@@ -107,7 +107,7 @@ namespace E_Commerce.Services
             commentDto.Comment = comment.Description;
             commentDto.ProductId = comment.ProductId;
             commentDto.CreatedAt = comment.CreatedAt;
-            commentDto.username = comment.Username;
+            commentDto.UserName = comment.Username;
 
             await commentRepository.Save();
 
@@ -115,14 +115,35 @@ namespace E_Commerce.Services
 
         }
 
-        public async Task<bool> DeleteComment(string Role, string UserId, int CommentId)
+        public async Task<bool> DeleteComment(string? Role, string UserId, int CommentId)
         {
-            var result = await commentRepository.DeleteComment(Role, UserId, CommentId);
 
-            if (result)
+
+            if (Role == "Admin")
+            {
+                var comment1 = await commentRepository.FindCommentById(CommentId);
+
+                if (comment1 == null)
+                    return false;
+                commentRepository.DeleteComment(comment1);
                 await commentRepository.Save();
-            return result;
+                return true;
+            }
+
+            var comment = await commentRepository.FindCommentById(CommentId, UserId);
+
+            if (comment != null)
+            {
+                commentRepository.DeleteComment(comment);
+                await commentRepository.Save();
+                return true;
+            }
+
+            return false;
         }
 
+
     }
+
 }
+

@@ -13,14 +13,11 @@ namespace E_Commerce.Services
             this.productRepository = productRepository;
         }
 
-        public async Task<ProductCountWithList?> GetAllProductsAsync(int Page, int PageSize, string? searchTerm)
+        public async Task<ProductCountWithList> GetAllProductsAsync(int Page, int PageSize, string? searchTerm)
         {
             var Products = await productRepository.GetProductsAsync(Page, PageSize, searchTerm);
 
             var Count = await productRepository.GetProductCountAsync(searchTerm);
-
-            if (Products == null || Count == null)
-                return null;
 
             var products = Products.Select(p => new ShowProductDto
             {
@@ -86,7 +83,7 @@ namespace E_Commerce.Services
             showProduct.Description = product.Description;
             showProduct.Price = product.Price;
             showProduct.Quantity = product.Quantity;
-            showProduct.CategoryID = product.Quantity;
+            showProduct.CategoryID = product.CategoryID;
 
 
             return showProduct;
@@ -97,7 +94,7 @@ namespace E_Commerce.Services
             var product = await productRepository.GetProductByIdAsync(id);
 
             if (product == null)
-                return null;
+                return null; // not Found 
 
 
             product.Name = ProductFromReq.Name;
@@ -118,7 +115,7 @@ namespace E_Commerce.Services
             var Product = await productRepository.GetProductByIdAsync(productId);
 
             if (Product == null)
-                return null;
+                return null; // notFound
 
             await productRepository.deleteProductAsync(productId);
             await productRepository.SaveAsync();

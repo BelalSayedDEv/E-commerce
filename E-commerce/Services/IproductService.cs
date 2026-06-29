@@ -6,7 +6,7 @@ namespace E_Commerce.Services
     {
 
         public Task<ShowProductDto?> GetProductByIdAsync(int productId);
-        public Task<ProductCountWithList?> GetAllProductsAsync(int Page, int PageSize, string? searchTerm);
+        public Task<ProductCountWithList> GetAllProductsAsync(int Page, int PageSize, string? searchTerm);
         public Task<ShowProductDto?> AddProductAsync(AddProductDTO productFromReq);
 
         public Task<EditProductDto?> EditProductAsync(int id, EditProductDto ProductFromReq);

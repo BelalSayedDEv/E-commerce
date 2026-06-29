@@ -1,4 +1,6 @@
-﻿using E_Commerce.DTos.Order;
+﻿using E_Commerce.Contracts;
+using E_Commerce.DTos.Order;
+using E_Commerce.DTos.ProductDTOs;
 using E_Commerce.Model;
 using E_Commerce.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -26,51 +28,61 @@ namespace E_Commerce.Controllers
 
             var result = await orderService.MakeOrder(userId);
 
-            if (result == null)
-                return BadRequest(ApiResponse<Object>.Failure("Cart is empty or stock insufficient"));
+            switch (result.Outcome)
+            {
+                case OrderOutcome.ProductDeleted:
+                    return Conflict(ApiResponse<object>.Failure(result.Message!));
 
-            return Ok(ApiResponse<OrderDto>.Success(result));
+                case OrderOutcome.NotEnoughStock:
+                    return Conflict(ApiResponse<object>.Failure(result.Message!));
+
+                case OrderOutcome.CartItemsEmpty:
+                    return BadRequest(ApiResponse<object>.Failure(result.Message!));
+
+                case OrderOutcome.Error:
+                    return BadRequest(ApiResponse<object>.Failure(result.Message!));
+
+            }
+            return Ok(ApiResponse<OrderDto>.Success(result.OrderDto));
         }
 
-        [AllowAnonymous]
-        [HttpGet("History")]
-        public IActionResult GetOrdersResult()
+        [HttpGet]
+        public async Task<IActionResult> GetOrdersResult()
         {
             string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
-            var OrderHistory = orderService.GetOrdersHistory(UserId);
-
-            if (OrderHistory == null)
-                return NotFound(ApiResponse<object>.Failure("No Orders Found"));
+            var OrderHistory = await orderService.GetOrdersHistory(UserId);
 
             return Ok(ApiResponse<List<OrderDto>>.Success(OrderHistory));
         }
 
-        [AllowAnonymous]
-        [HttpGet("admin/History")]
-        public IActionResult GetOrdersHistoryForAdmin()
-        {
-            string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-
-            var OrderHistory = orderService.GetOrdersHistoryForAdmin();
-
-            if (OrderHistory == null)
-                return NotFound(ApiResponse<object>.Failure("No Orders Found"));
-
-            return Ok(ApiResponse<List<OrderDto>>.Success(OrderHistory));
-        }
-
-
-
-        [HttpPatch("{Id}/Status")]
         [Authorize(Roles = "Admin")]
-        public IActionResult UpdateStatus(int Id, string Status)
+        [HttpGet("admin/orders")]
+        public async Task<IActionResult> GetOrdersHistoryForAdmin()
         {
-            var order = orderService.UpdateStatus(Id, Status);
-            if (order == null)
-                return NotFound(ApiResponse<object>.Failure("Order Not Found"));
+            string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
-            return Ok(ApiResponse<OrderDto>.Success(order));
+            var OrderHistory = await orderService.GetOrdersHistoryForAdmin();
+
+            return Ok(ApiResponse<List<OrderDto>>.Success(OrderHistory));
+        }
+
+        [HttpPatch("{Id}/status")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateStatus(int Id, UpdateOrderStatus dto)
+        {
+            var result = await orderService.UpdateStatus(Id, dto.Status);
+
+            switch (result.Outcome)
+            {
+
+                case OrderOutcome.SameStatus:
+                    return Conflict(ApiResponse<object>.Failure(result.Message!));
+                case OrderOutcome.OrderNotFound:
+                    return NotFound(ApiResponse<object>.Failure(result.Message!));
+            }
+
+            return Ok(ApiResponse<OrderDto>.Success(result.OrderDto));
         }
 
 

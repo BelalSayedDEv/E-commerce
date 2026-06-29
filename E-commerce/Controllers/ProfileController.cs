@@ -30,6 +30,7 @@ namespace E_Commerce.Controllers
                 return NotFound(ApiResponse<object>.Failure("Profile Not Found"));
 
             return Ok(ApiResponse<GetProfileDto>.Success(profile));
+
         }
 
         [HttpPatch]
@@ -45,14 +46,12 @@ namespace E_Commerce.Controllers
             return Ok(ApiResponse<UpdateProfileDto>.Success(Updatedprofile));
         }
 
-        [HttpGet("Profiles")]
+        [Authorize(Roles = "Admin")]
+        [HttpGet("all-profiles")]
         public async Task<IActionResult> GetProfilesForAdmin()
         {
 
             var profiles = await profileService.GetProfiles();
-
-            if (profiles is null)
-                return NotFound(ApiResponse<object>.Failure("Profile Not Found"));
 
             return Ok(ApiResponse<List<GetProfileForAdminDto>>.Success(profiles));
         }

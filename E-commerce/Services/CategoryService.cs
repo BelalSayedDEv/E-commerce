@@ -14,13 +14,12 @@ namespace E_Commerce.Services
             this.categoryRepository = categoryRepository;
         }
 
-        public IEnumerable<ShowCategoryDto>? GetCategories()
+        public IEnumerable<ShowCategoryDto> GetCategories()
         {
-            var Categories = categoryRepository.GetCategories();
+            List<Category> Categories = categoryRepository.GetCategories();
 
-            if (Categories == null)
-                return null;
-
+            if (!Categories.Any())
+                return new List<ShowCategoryDto>();
 
             List<ShowCategoryDto> list = new List<ShowCategoryDto>();
 

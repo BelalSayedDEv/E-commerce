@@ -60,6 +60,7 @@ namespace E_Commerce.Services
         public async Task<List<GetProfileForAdminDto>> GetProfiles()
         {
             var Users = await userManager.Users.ToListAsync();
+
             List<GetProfileForAdminDto> Profiles = new List<GetProfileForAdminDto>();
 
             foreach (var user in Users)

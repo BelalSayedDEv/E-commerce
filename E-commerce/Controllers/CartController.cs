@@ -1,4 +1,5 @@
-﻿using E_Commerce.DTos.Cart;
+﻿using E_Commerce.Contracts;
+using E_Commerce.DTos.Cart;
 using E_Commerce.Model;
 using E_Commerce.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -19,45 +20,53 @@ namespace E_Commerce.Controllers
             this.cartService = cartService;
         }
 
-        [HttpPost]
-        public IActionResult AddCartItem(AddToCartDto dto)
-        {
-            var claimsList = User.Claims.Select(c => $"{c.Type} = {c.Value}").ToList();
 
-            string id = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-
-            Console.WriteLine($"NameIdentifier claim: '{(id ?? "NULL")}'");
-
-            cartService.AddToCart(id, dto);
-
-            return Ok(ApiResponse<object>.Success(null, "Item added in Card"));
-
-        }
         [HttpGet]
         public async Task<IActionResult> GetCart()
         {
 
             string id = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
-            CartDto? cartDto = await cartService.GetCartAsync(id);
-
-            if (cartDto == null)
-                return NotFound(ApiResponse<object>.Failure("Not Found"));
-
+            CartDto cartDto = await cartService.GetCartAsync(id);
 
             return Ok(ApiResponse<CartDto>.Success(cartDto));
 
         }
 
-        [HttpDelete("{ItemId}")]
-        public IActionResult DeleteCart(int ItemId)
+
+        [HttpPost]
+        public async Task<IActionResult> AddCartItem(AddToCartDto dto)
         {
 
-            var result = cartService.RemoveFromCart(ItemId);
-            if (!result)
-                return NotFound(ApiResponse<object>.Failure("Not Found"));
+            string id = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
-            return Ok(ApiResponse<Object>.Success(null, "Deleted Successfuly"));
+            var result = await cartService.AddToCart(id, dto);
+
+            switch (result.Outcome)
+            {
+                case CartOutcome.ProductNotFound:
+                    return NotFound(ApiResponse<object>.Failure(result.Message!));
+
+                case CartOutcome.QuantityUpdated:
+                    return Ok(ApiResponse<CartItemDto>.Success(result.Item, "Quantity updated"));
+
+                case CartOutcome.NotEnoughStock:
+                    return BadRequest(ApiResponse<object>.Failure(result.Message!));
+            }
+            return Created("", ApiResponse<CartItemDto>.Success(result.Item));
+        }
+
+
+        [HttpDelete("{ItemId}")]
+        public async Task<IActionResult> DeleteFromCart(int ItemId)
+        {
+
+            var result = await cartService.RemoveFromCart(ItemId);
+
+            if (!result)
+                return NotFound(ApiResponse<object>.Failure("CartItem not found"));
+
+            return NoContent();
         }
 
     }

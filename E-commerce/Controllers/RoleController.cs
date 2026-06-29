@@ -17,7 +17,7 @@ namespace E_Commerce.Controllers
         }
 
 
-        [HttpPost("AddRole")]
+        [HttpPost]
 
         public async Task<IActionResult> AddRole(AddRole RoleDto)
         {

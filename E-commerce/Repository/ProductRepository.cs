@@ -20,14 +20,13 @@ namespace E_Commerce.Repository
         }
 
 
-        public async Task<List<Product>?> GetProductsAsync(int page, int pageSize, string? SearchTerm)
+        public async Task<List<Product>> GetProductsAsync(int page, int pageSize, string? SearchTerm)
         {
             var query = Context.Products.AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(SearchTerm))
                 query = query.Where(p => p.Name.Contains(SearchTerm));
 
-            Console.WriteLine(query.ToQueryString());
             return await query.Skip((page - 1) * pageSize).Take(pageSize).AsNoTracking().ToListAsync();
         }
 

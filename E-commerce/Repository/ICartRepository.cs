@@ -4,11 +4,15 @@ namespace E_Commerce.Repository
 {
     public interface ICartRepository
     {
+        public Task AddCart(Cart cart);
+        public Task AddItemToCart(CartItem cartItem);
+        public Task<CartItem?> GetCartItemById(int CartItem);
 
-        public Cart? GetCartByUserId(string UserId);
+        public Task<CartItem?> GetCartItemByProductIdAndCartId(int ProductId, int CartId);
+        public void RemoveItemFromCart(CartItem cartItem);
+        public Task<Cart?> GetCartByUserId(string UserId);
+        public Task<List<CartItem>> GetCartItems(int CartId);
+        public Task Save();
 
-        public void Save();
-
-        public void AddCart(Cart cart);
     }
 }

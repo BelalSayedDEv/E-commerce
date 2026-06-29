@@ -19,10 +19,12 @@ namespace E_Commerce.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllProducts([FromQuery] int Page, [FromQuery] int PageSize, [FromQuery] string? searchTerm)
         {
+            if (Page <= 0 || PageSize <= 0)
+                return BadRequest(ApiResponse<object>.Failure("Page Or Page Size less than 0"));
+
+
             var products = await productService.GetAllProductsAsync(Page, PageSize, searchTerm);
 
-            if (products == null || products.ProductList == null || products.TotalCount == 0)
-                return NotFound(ApiResponse<object>.Failure("No Found"));
 
             return Ok(ApiResponse<ProductCountWithList>.Success(products));
         }
@@ -31,11 +33,13 @@ namespace E_Commerce.Controllers
         [HttpGet("{Id}")]
         public async Task<ActionResult<AddProductDTO>> GetProductById(int Id)
         {
+            if (Id <= 0)
+                return BadRequest(ApiResponse<object>.Failure("Less than zero"));
 
             var Product = await productService.GetProductByIdAsync(Id);
 
             if (Product == null)
-                return NotFound(ApiResponse<object>.Failure("No Found"));
+                return NotFound(ApiResponse<object>.Failure("Not Found"));
 
             return Ok(ApiResponse<ShowProductDto>.Success(Product));
         }
@@ -47,7 +51,7 @@ namespace E_Commerce.Controllers
             var product = await productService.AddProductAsync(ProductFromReq);
 
             if (product == null)
-                return BadRequest(ApiResponse<Object>.Failure("Product has already exist"));
+                return Conflict(ApiResponse<object>.Failure("The product already exists"));
 
             return CreatedAtAction("GetProductById", new { Id = product.Id }, ApiResponse<ShowProductDto>.Success(product));
 
@@ -56,12 +60,13 @@ namespace E_Commerce.Controllers
         [HttpPut("{Id}")]
         public async Task<IActionResult> EditProduct(int Id, EditProductDto ProductFromReq)
         {
-
+            if (Id <= 0)
+                return BadRequest(ApiResponse<object>.Failure("Less than zero"));
 
             EditProductDto? product = await productService.EditProductAsync(Id, ProductFromReq);
 
             if (product == null)
-                return NotFound(ApiResponse<object>.Failure("No Found"));
+                return NotFound(ApiResponse<object>.Failure("Not Found"));
 
             return Ok(ApiResponse<EditProductDto>.Success(product));
 
@@ -70,37 +75,26 @@ namespace E_Commerce.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteProduct(int Id)
         {
+            if (Id <= 0)
+                return BadRequest(ApiResponse<object>.Failure("Less than zero"));
 
             var Product = await productService.DeleteProductAsync(Id);
-            if (Product == null)
-                return NotFound(ApiResponse<object>.Failure("No Found"));
 
-            return Ok(ApiResponse<Object>.Success(null, "Deleted Successfully"));
+            if (Product == null)
+                return NotFound(ApiResponse<object>.Failure("Not Found"));
+
+            return NoContent();
 
         }
 
-        [HttpPut("UpdateStock/Id")]
+        [HttpPut("{Id}/stock")]
         public async Task<IActionResult> UpdateProductStock(int Id, UpdateProductStock stock)
         {
             var Prodcut = await productService.EditeProductStockAsync(Id, stock);
             if (Prodcut == null)
-                return NotFound(ApiResponse<Object>.Failure("Not Found"));
+                return NotFound(ApiResponse<object>.Failure("Not Found"));
 
             return Ok(ApiResponse<ShowProductDto>.Success(Prodcut));
-        }
-
-        [HttpGet("Test")]
-        public async Task<IActionResult> GetProductsSpacific([FromQuery] int Page, [FromQuery] int PageSize, [FromQuery] string? searchTerm)
-        {
-            var products = await productService.GetAllProductsAsync(Page, PageSize, searchTerm);
-
-            var SelectedProducts = products.ProductList.Select(p => new
-            {
-                Name = p.Name,
-                Price = p.Price,
-            });
-
-            return Ok(ApiResponse<object>.Success(SelectedProducts));
         }
 
     }

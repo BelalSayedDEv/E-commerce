@@ -26,7 +26,7 @@ namespace E_Commerce.Controllers
         }
 
 
-        [HttpPost("Register")]
+        [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto UserFromReq)
         {
             if (ModelState.IsValid)
@@ -71,7 +71,7 @@ namespace E_Commerce.Controllers
 
         }
 
-        [HttpPost("Login")]
+        [HttpPost("login")]
         public async Task<IActionResult> LoginAsync(LoginDto UserFromReq)
         {
             if (!ModelState.IsValid)
@@ -156,13 +156,13 @@ namespace E_Commerce.Controllers
 
 
 
-        [HttpPost("AdminRegister")]
+        [HttpPost("register-admin")]
         public async Task<IActionResult> AdminRegister(RegisterDto UserFromReq)
         {
             var user = await userManager.FindByNameAsync(UserFromReq.UserName);
 
             if (user != null)
-                return BadRequest(ApiResponse<object>.Failure("User Is Exist"));
+                return Conflict(ApiResponse<object>.Failure("User Is Exist"));
 
             var User = new ApplicationUser
             {
@@ -178,7 +178,7 @@ namespace E_Commerce.Controllers
             if (result.Succeeded)
             {
                 await userManager.AddToRoleAsync(User, "Admin");
-                return Ok(ApiResponse<object>.Success(null, "Created"));
+                return Created("", ApiResponse<object>.Success(null, "Created"));
             }
 
             foreach (var item in result.Errors)

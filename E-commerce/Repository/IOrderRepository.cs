@@ -4,14 +4,12 @@ namespace E_Commerce.Repository
 {
     public interface IOrderRepository
     {
-        public Order Add(Order order);
-
-        public List<Order> GetOrders();
-        public List<Order> GetOrders(string userId);
-
-        public Order? GetOrderById(int Id);
-        public void Save();
-
+        public Task AddNewOrderItem(OrderItem orderItem);
+        public Task AddNewOrder(Order order);
+        public Task<List<Order>> GetOrders();
+        public Task<List<Order>> GetOrdersByUserId(string userId);
+        public Task<Order?> GetOrderById(int Id);
+        public Task Save();
         public ApplicationDbContext Context();
     }
 }

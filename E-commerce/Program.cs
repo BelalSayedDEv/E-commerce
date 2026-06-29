@@ -20,9 +20,9 @@ namespace E_Commerce
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("CS"))
-                .LogTo(Console.WriteLine, LogLevel.Information)
-                .EnableSensitiveDataLogging();
+                options.UseSqlServer(builder.Configuration.GetConnectionString("CS"));
+                //.LogTo(Console.WriteLine, LogLevel.Information)
+                //.EnableSensitiveDataLogging();
             });
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -82,12 +82,10 @@ namespace E_Commerce
             builder.Services.AddScoped<IproductService, ProductService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<ICategoryRepository, CategoryRepostiry>();
-            builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
             builder.Services.AddScoped<ICartRepository, CartRepository>();
             builder.Services.AddScoped<ICartService, CartService>();
 
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-            builder.Services.AddScoped<IOrderItemRepository, OrderItemRepository>();
             builder.Services.AddScoped<IOrderService, OrderService>();
 
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
@@ -110,7 +108,7 @@ namespace E_Commerce
             {
                 using var scope = app.Services.CreateScope();
 
-                var db = scope.ServiceProvider.GetService<ApplicationDbContext>();
+                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                 if (db != null)
                     db.Database.CanConnect();
 
@@ -172,8 +170,6 @@ namespace E_Commerce
 
             });
 
-
-
             app.UseCors("MyPolicy");
 
 
@@ -184,8 +180,6 @@ namespace E_Commerce
             app.MapControllers();
 
             app.Run();
-
-
 
         }
     }

@@ -11,7 +11,7 @@ namespace E_Commerce.Repository
         {
             Context = _dbContext;
         }
-        public List<Category>? GetCategories()
+        public List<Category> GetCategories()
         {
             var Categories = Context.Categories.AsNoTracking().Include(c => c.Products).ToList();
             return Categories;

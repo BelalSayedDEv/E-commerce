@@ -12,44 +12,45 @@ namespace E_Commerce.Repository
             this.context = context;
         }
 
-        public Order Add(Order order)
+        public async Task AddNewOrderItem(OrderItem orderItem)
         {
-            context.Orders.Add(order);
-            return order;
+            await context.AddAsync(orderItem);
+        }
+        public async Task AddNewOrder(Order order)
+        {
+            await context.Orders.AddAsync(order);
         }
 
-        public List<Order> GetOrders()
+        public async Task<List<Order>> GetOrders()
         {
-            var Orders = context.Orders.AsNoTracking()
+            var Orders = await context.Orders.AsNoTracking()
                 .Include(o => o.Items)
                 .ThenInclude(i => i.Product)
                 .OrderByDescending(o => o.OrderDate)
-                .ToList();
+                .ToListAsync();
             return Orders;
         }
-
-
-        public List<Order> GetOrders(string userId)
+        public async Task<List<Order>> GetOrdersByUserId(string userId)
         {
-            var Orders = context.Orders.AsNoTracking()
+            var Orders = await context.Orders.AsNoTracking()
                 .Include(o => o.Items)
                 .ThenInclude(i => i.Product)
                 .Where(o => o.UserId == userId)
                 .OrderByDescending(o => o.OrderDate)
-                .ToList();
+                .ToListAsync();
             return Orders;
         }
-        public Order? GetOrderById(int Id)
+        public async Task<Order?> GetOrderById(int Id)
         {
-            return context.Orders
+            return await context.Orders
                     .Include(o => o.Items)
                      .ThenInclude(i => i.Product)
-                     .SingleOrDefault(o => o.Id == Id);
+                     .SingleOrDefaultAsync(o => o.Id == Id);
 
         }
-        public void Save()
+        public async Task Save()
         {
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
         public ApplicationDbContext Context()

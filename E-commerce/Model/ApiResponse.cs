@@ -2,7 +2,6 @@
 {
     public class ApiResponse<T>
     {
-        public int StatusCode { get; set; }
         public string Message { get; set; } = string.Empty;
         public T? Data { get; set; }
         public List<string>? Errors { get; set; }
@@ -13,17 +12,16 @@
         {
             return new ApiResponse<T>
             {
-                StatusCode = 200,
                 Message = Message ?? string.Empty,
                 Data = _Data,
                 IsSuccess = true
             };
         }
-        public static ApiResponse<T> Failure(string Message, List<string>? Errors = null, int StatusCode = 400)
+        public static ApiResponse<T> Failure(string Message, List<string>? Errors = null)
         {
             return new ApiResponse<T>
             {
-                StatusCode = StatusCode,
+
                 Message = Message,
                 Data = default,
                 IsSuccess = false,

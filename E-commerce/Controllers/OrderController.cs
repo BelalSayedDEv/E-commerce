@@ -31,19 +31,19 @@ namespace E_Commerce.Controllers
             switch (result.Outcome)
             {
                 case OrderOutcome.ProductDeleted:
-                    return Conflict(ApiResponse<object>.Failure(result.Message!));
+                    return NotFound(ApiResponse<object>.Failure(result.Message!));
 
                 case OrderOutcome.NotEnoughStock:
                     return Conflict(ApiResponse<object>.Failure(result.Message!));
 
                 case OrderOutcome.CartItemsEmpty:
-                    return BadRequest(ApiResponse<object>.Failure(result.Message!));
+                    return Conflict(ApiResponse<object>.Failure(result.Message!));
 
                 case OrderOutcome.Error:
                     return BadRequest(ApiResponse<object>.Failure(result.Message!));
 
             }
-            return Ok(ApiResponse<OrderDto>.Success(result.OrderDto));
+            return Created("", ApiResponse<OrderDto>.Success(result.OrderDto));
         }
 
         [HttpGet]

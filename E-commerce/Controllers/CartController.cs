@@ -53,6 +53,7 @@ namespace E_Commerce.Controllers
                 case CartOutcome.NotEnoughStock:
                     return BadRequest(ApiResponse<object>.Failure(result.Message!));
             }
+
             return Created("", ApiResponse<CartItemDto>.Success(result.Item));
         }
 

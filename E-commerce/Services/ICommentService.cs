@@ -7,8 +7,9 @@ namespace E_Commerce.Services
         public Task<ShowCommentDto?> Add(string UserName, string UserId, AddCommentDto addCommentDto);
         public Task<CommentHistoryDto> FindByProductId(int ProductId);
         public Task<ShowCommentDto?> UpdateComment(string UserId, UpdateCommetDto updateCommetDto);
-        public Task<bool> DeleteComment(string Role, string UserId, int CommentId);
+        public Task<bool> DeleteAnyComment(int CommentId);
 
+        public Task<bool> DeleteOwnComment(string UserId, int CommentId);
         public Task<CommentHistoryDto> GetHistoryOfCommentByUserId(string UserId);
 
     }

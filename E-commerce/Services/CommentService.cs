@@ -97,7 +97,7 @@ namespace E_Commerce.Services
             var comment = await commentRepository.FindCommentById(updateCommetDto.CommentId, UserId);
 
             if (comment == null)
-                return null;
+                return null; // not found 
 
             comment.Description = updateCommetDto.CommentText;
 
@@ -115,21 +115,23 @@ namespace E_Commerce.Services
 
         }
 
-        public async Task<bool> DeleteComment(string? Role, string UserId, int CommentId)
+        public async Task<bool> DeleteAnyComment(int CommentId)
         {
 
+            var comment = await commentRepository.FindCommentById(CommentId);
 
-            if (Role == "Admin")
+            if (comment != null)
             {
-                var comment1 = await commentRepository.FindCommentById(CommentId);
-
-                if (comment1 == null)
-                    return false;
-                commentRepository.DeleteComment(comment1);
+                commentRepository.DeleteComment(comment);
                 await commentRepository.Save();
                 return true;
             }
 
+            return false; // not found
+        }
+
+        public async Task<bool> DeleteOwnComment(string UserId, int CommentId)
+        {
             var comment = await commentRepository.FindCommentById(CommentId, UserId);
 
             if (comment != null)
@@ -139,10 +141,8 @@ namespace E_Commerce.Services
                 return true;
             }
 
-            return false;
+            return false; // not found
         }
-
-
     }
 
 }

@@ -60,17 +60,26 @@ namespace E_Commerce.Controllers
 
         }
 
+        [HttpDelete("admin/{Id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteComment(int Id)
+        {
 
+            var result = await commentService.DeleteAnyComment(Id);
+
+            if (result)
+                return NoContent();
+
+            return NotFound(ApiResponse<object>.Failure("Comment Not Found"));
+
+        }
 
         [HttpDelete("{Id}")]
-
-        public async Task<IActionResult> DeleteComment(int Id)
+        public async Task<IActionResult> DeleteOwnComment(int Id)
         {
             string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
-            string Role = User.FindFirstValue(ClaimTypes.Role)!;
-
-            var result = await commentService.DeleteComment(Role, UserId, Id);
+            var result = await commentService.DeleteOwnComment(UserId, Id);
 
             if (result)
                 return NoContent();

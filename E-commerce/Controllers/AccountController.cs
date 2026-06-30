@@ -33,7 +33,7 @@ namespace E_Commerce.Controllers
             {
                 var userFromDb = await userManager.FindByNameAsync(UserFromReq.UserName);
                 if (userFromDb != null)
-                    return BadRequest(ApiResponse<object>.Failure("User is Exist"));
+                    return Conflict(ApiResponse<object>.Failure("User is Exist"));
 
                 var user = new ApplicationUser
                 {
@@ -51,7 +51,7 @@ namespace E_Commerce.Controllers
                     cartRepository.AddCart(cart);
                     cartRepository.Save();
 
-                    return Ok(ApiResponse<object>.Success(null, "Created"));
+                    return Created("", ApiResponse<object>.Success(null, "Created"));
                 }
 
                 foreach (var item in result.Errors)
@@ -79,7 +79,6 @@ namespace E_Commerce.Controllers
                 var Errors1 = ModelState.Values.SelectMany(x => x.Errors)
                                .Select(x => x.ErrorMessage)
                                .ToList();
-
 
                 return BadRequest(ApiResponse<object>.Failure("Validation Faild", Errors1));
             }
@@ -140,7 +139,6 @@ namespace E_Commerce.Controllers
 
                     return Ok(ApiResponse<object>.Success(result_Token));
                 }
-
             }
 
             ModelState.AddModelError("Password", "Password or Username is Invalid");
@@ -150,7 +148,7 @@ namespace E_Commerce.Controllers
                                            .ToList();
 
 
-            return BadRequest(ApiResponse<object>.Failure("Validation Faild", Errors));
+            return Unauthorized(ApiResponse<object>.Failure("Password or Username is Invalid", Errors));
         }
 
 

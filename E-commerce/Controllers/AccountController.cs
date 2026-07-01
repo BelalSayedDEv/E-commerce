@@ -1,12 +1,11 @@
-﻿using E_Commerce.DTos.AccountDTOs;
+﻿using E_Commerce.Contracts;
+using E_Commerce.DTos.AccountDTOs;
 using E_Commerce.Model;
 using E_Commerce.Repository;
+using E_Commerce.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 
 namespace E_Commerce.Controllers
 {
@@ -14,17 +13,58 @@ namespace E_Commerce.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
+        private readonly IAccountService accountService;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IConfiguration configuration;
         private readonly ICartRepository cartRepository;
 
-        public AccountController(UserManager<ApplicationUser> userManager, IConfiguration configuration, ICartRepository cartRepository)
+        public AccountController(IAccountService accountService, UserManager<ApplicationUser> userManager, IConfiguration configuration, ICartRepository cartRepository)
         {
+            this.accountService = accountService;
             this.userManager = userManager;
             this.configuration = configuration;
             this.cartRepository = cartRepository;
         }
 
+        [HttpPost("login")]
+        public async Task<IActionResult> LoginAsync(LoginDto UserFromReq)
+        {
+            var result = await accountService.Login(UserFromReq);
+
+            if (result.outcome == AccountOutcome.Unauthorized)
+                return Unauthorized(ApiResponse<object>.Failure(result.Message!));
+
+            return Ok(ApiResponse<ResponseTokenDTO>.Success(result.Data));
+        }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh(RefreshDto refreshDto)
+        {
+            var userid = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+
+            var result = await accountService.Refresh(userid, refreshDto);
+
+            switch (result.outcome)
+            {
+                case AccountOutcome.TokenNotFound:
+                    return NotFound(ApiResponse<object>.Failure(result.Message!));
+
+                case AccountOutcome.UserNotOwnToken:
+                    return NotFound(ApiResponse<object>.Failure(result.Message!)); ;
+
+                case AccountOutcome.TokenExpired:
+                    return Conflict(ApiResponse<object>.Failure(result.Message!)); ;
+
+                case AccountOutcome.TokenRevoked:
+                    return Conflict(ApiResponse<object>.Failure(result.Message!)); ;
+
+                case AccountOutcome.TokenUsed:
+                    return Conflict(ApiResponse<object>.Failure(result.Message!)); ;
+            }
+
+            return Ok(ApiResponse<ResponseTokenDTO>.Success(result.Data));
+
+        }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto UserFromReq)
@@ -70,88 +110,6 @@ namespace E_Commerce.Controllers
             return BadRequest(ApiResponse<object>.Failure("Validation Faild", Errors));
 
         }
-
-        [HttpPost("login")]
-        public async Task<IActionResult> LoginAsync(LoginDto UserFromReq)
-        {
-            if (!ModelState.IsValid)
-            {
-                var Errors1 = ModelState.Values.SelectMany(x => x.Errors)
-                               .Select(x => x.ErrorMessage)
-                               .ToList();
-
-                return BadRequest(ApiResponse<object>.Failure("Validation Faild", Errors1));
-            }
-
-
-            var user = await userManager.FindByNameAsync(UserFromReq.UserName);
-
-            if (user != null)
-            {
-                bool Found = await userManager.CheckPasswordAsync(user, UserFromReq.Password);
-
-                if (Found)
-                {
-                    //generate Token
-
-
-                    List<Claim> claims = new List<Claim>();
-
-                    claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id));
-                    claims.Add(new Claim(ClaimTypes.Name, user.UserName!));
-                    claims.Add(new Claim(CustomClaims.FullName, user.FullName));
-
-                    // generated jti  Id token 
-
-                    claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-
-                    var Role = await userManager.GetRolesAsync(user);
-
-
-                    foreach (var item in Role)
-                    {
-                        claims.Add(new Claim(ClaimTypes.Role, item));
-                    }
-
-                    // finish claims 
-
-                    var SignIn = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Secrit"]!));
-
-                    var signingKey = new SigningCredentials(SignIn, SecurityAlgorithms.HmacSha256);
-
-
-
-                    //design Token Response
-
-                    JwtSecurityToken token = new JwtSecurityToken(
-                        issuer: configuration["Jwt:Issu"],
-                        audience: configuration["Jwt:Aud"],
-                        expires: DateTime.Now.AddDays(1),
-                        claims: claims,
-                        signingCredentials: signingKey
-                        );
-
-                    object result_Token = new
-                    {
-                        token = new JwtSecurityTokenHandler().WriteToken(token),
-                        expiration = DateTime.Now.AddDays(1),
-                    };
-
-                    return Ok(ApiResponse<object>.Success(result_Token));
-                }
-            }
-
-            ModelState.AddModelError("Password", "Password or Username is Invalid");
-
-            var Errors = ModelState.Values.SelectMany(x => x.Errors)
-                                           .Select(x => x.ErrorMessage)
-                                           .ToList();
-
-
-            return Unauthorized(ApiResponse<object>.Failure("Password or Username is Invalid", Errors));
-        }
-
-
 
 
         [HttpPost("register-admin")]

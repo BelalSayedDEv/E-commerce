@@ -18,4 +18,14 @@
         OrderNotFound = 7,
 
     }
+    public enum AccountOutcome
+    {
+        Authorized = 1,
+        Unauthorized = 2,
+        TokenNotFound = 3,
+        UserNotOwnToken = 4,
+        TokenExpired = 5,
+        TokenRevoked = 6,
+        TokenUsed = 7,
+    }
 }

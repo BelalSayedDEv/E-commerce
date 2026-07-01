@@ -1,5 +1,4 @@
-﻿using E_Commerce.Model;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace E_Commerce.Model
 {
@@ -13,5 +12,7 @@ namespace E_Commerce.Model
         public List<Order> Orders { get; set; } = new List<Order>();
 
         public List<Comment> Comments { get; set; } = new List<Comment>();
+
+        public List<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
     }
 }

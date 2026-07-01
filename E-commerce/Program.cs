@@ -64,14 +64,14 @@ namespace E_Commerce
                 {
 
                     ValidateIssuer = true,
-                    ValidIssuer = builder.Configuration["Jwt:Issu"],
+                    ValidIssuer = builder.Configuration["Jwt:issuer"],
 
                     ValidateAudience = true,
-                    ValidAudience = builder.Configuration["Jwt:Aud"],
+                    ValidAudience = builder.Configuration["Jwt:audience"],
 
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey
-                                (Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secrit"]!)),
+                                (Encoding.UTF8.GetBytes(builder.Configuration["Jwt:secret"]!)),
 
 
                     ValidateLifetime = true,
@@ -94,6 +94,9 @@ namespace E_Commerce
             builder.Services.AddScoped<ICommentService, CommentService>();
 
             builder.Services.AddScoped<IProfileService, ProfileService>();
+
+            builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+            builder.Services.AddScoped<IAccountService, AccountService>();
             // Add services to the container.
 
             builder.Services.AddControllers();
